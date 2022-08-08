@@ -49,12 +49,12 @@ class order_form extends moodleform {
         $mform->setType('action', PARAM_TEXT);
 
         $status = array(
-            'Pending payment',
-            'On hold',
-            'Completed',
-            'Cancelled',
-            'Refunded',
-            'Failed',
+            'pending' => 'Pending payment',
+            'on-hold' => 'On hold',
+            'completed' => 'Completed',
+            'cancelled' => 'Cancelled',
+            'refunded' => 'Refunded',
+            'failed' => 'Failed',
         );
         $mform->addElement('select', 'status', get_string('status', PLUGIN), $status);
 
