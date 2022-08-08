@@ -56,7 +56,7 @@ class order_form extends moodleform {
             'refunded' => 'Refunded',
             'failed' => 'Failed',
         );
-        $mform->addElement('select', 'status', get_string('status', PLUGIN), $status);
+        $mform->addElement('select', 'paymentstatus', get_string('status', PLUGIN), $status);
 
         $this->add_action_buttons(true, get_string('save'));
 

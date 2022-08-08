@@ -28,3 +28,10 @@ $string['status'] = 'Status';
 $string['actions'] = 'Actions';
 $string['total'] = 'Total';
 $string['pluginname_desc'] = 'Add and update users order';
+$string['pending'] = 'Pending payment';
+$string['on-hold'] = 'On hold';
+$string['completed'] = 'Completed';
+$string['cancelled'] = 'Cancelled';
+$string['refunded'] = 'Refunded';
+$string['failed'] = 'Failed';
+

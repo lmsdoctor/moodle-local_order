@@ -137,10 +137,12 @@ class order_table extends \table_sql {
      * @param  stdClass $row
      * @return string
      */
-    // public function col_paymentstatus($row) {
-    //     global $DB;
-    //     return $DB->get_field('local_order_licensetype', 'name', array('id' => $row->licenseid));
-    // }
+    public function col_paymentstatus($row) {
+        if (empty($row->paymentstatus)) {
+            return '-';
+        }
+        return get_string($row->paymentstatus, PLUGIN);
+    }
 
     /**
      * Returns subcategory.

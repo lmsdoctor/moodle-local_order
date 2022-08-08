@@ -68,27 +68,28 @@ if ($mform->is_cancelled()) {
     redirect($orderurl);
 } else if ($formdata = $mform->get_data()) {
 
-    if (!is_array($formdata->userid)) {
-        // Those are for single transactions.
-        if ($formdata->action === 'edit') {
-            $DB->update_record(TABLE, $formdata);
-            $status = 'Updated';
-            $id = $formdata->id;
-        }
+    // print_object($formdata);
+    // die();
 
-        if ($formdata->action === 'add') {
-            $id = $DB->insert_record(TABLE, $formdata, true, true);
-            $status = 'Saved';
-        }
-
-        redirect($orderurl, $status, 0, \core\output\notification::NOTIFY_SUCCESS);
+    // Those are for single transactions.
+    if ($formdata->action === 'edit') {
+        $DB->update_record(TABLE, $formdata);
+        $status = 'Updated';
+        $id = $formdata->id;
     }
+
+    if ($formdata->action === 'add') {
+        $id = $DB->insert_record(TABLE, $formdata, true, true);
+        $status = 'Saved';
+    }
+
+    redirect($orderurl, $status, 0, \core\output\notification::NOTIFY_SUCCESS);
 
 } else {
 
     // Set default data (if any).
     $toform = array(
-        'id' => null,
+        'id' => $id,
         'action' => $action,
         'userid' => $USER->id
     );
