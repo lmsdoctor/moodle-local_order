@@ -166,10 +166,12 @@ class order_table extends \table_sql {
         global $OUTPUT, $CFG;
 
         // Remove the path of the url.
-        $updateurl = new moodle_url('/local/order/update.php', array('id' => $row->id, 'action' => 'edit'));
+        $updateurl = new moodle_url('/local/order/update.php',
+            array('id' => $row->id, 'action' => 'edit'));
         $actions = $OUTPUT->action_icon($updateurl, new pix_icon('i/edit', ''));
 
-        $deleteurl = new moodle_url('/local/order/update.php', array('id' => $row->id, 'action' => 'delete'));
+        $deleteurl = new moodle_url('/local/order/update.php',
+            array('id' => $row->id, 'action' => 'delete', 'class' => 'action-delete'));
         $actions .= $OUTPUT->action_icon($deleteurl, new pix_icon('i/trash', ''), null, array('class' => 'action-delete'));
 
         return $actions;

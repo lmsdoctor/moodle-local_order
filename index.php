@@ -13,6 +13,7 @@ use local_order\order_table;
 $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url('/local/order/index.php');
+$PAGE->requires->js_call_amd('local_order/confirm', 'init');
 
 $download = optional_param('download', '', PARAM_ALPHA);
 define('PLUGIN', 'local_order');
