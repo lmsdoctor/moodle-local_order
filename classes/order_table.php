@@ -141,8 +141,7 @@ class order_table extends \table_sql {
         if (empty($row->paymentstatus)) {
             return '-';
         }
-        // return get_string($row->paymentstatus, PLUGIN);
-        return $row->paymentstatus;
+        return get_string(strtolower($row->paymentstatus), PLUGIN);
     }
 
     /**

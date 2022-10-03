@@ -56,20 +56,15 @@ if ($action === 'delete') {
     redirect($orderurl, 'Deleted', 0, \core\output\notification::NOTIFY_SUCCESS);
 }
 
-$customdata = array(
-    'id' => $id,
-    'action' => $action
-);
+$transaction = $DB->get_record(TABLE, array('id' => $id));
+$transaction->action = $action;
 
-$mform = new \local_order\form\order_form(null, $customdata);
+$mform = new \local_order\form\order_form(null, $transaction);
 
 // Form processing and displaying is done here.
 if ($mform->is_cancelled()) {
     redirect($orderurl);
 } else if ($formdata = $mform->get_data()) {
-
-    // print_object($formdata);
-    // die();
 
     // Those are for single transactions.
     if ($formdata->action === 'edit') {
@@ -90,6 +85,7 @@ if ($mform->is_cancelled()) {
     // Set default data (if any).
     $toform = array(
         'id' => $id,
+        'paymentstatus' => $transaction->paymentstatus,
         'action' => $action,
         'userid' => $USER->id
     );
