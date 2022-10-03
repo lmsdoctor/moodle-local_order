@@ -45,10 +45,10 @@ class order_table extends \table_sql {
         $columns = array(
             'id',
             'userid',
-            'courseid',
+            // 'courseid',
             'timeupdated',
             'paymentstatus',
-            'total',
+            'memo',
             'actions',
         );
 
@@ -58,7 +58,7 @@ class order_table extends \table_sql {
         $headers = array(
             get_string('order', PLUGIN),
             get_string('user'),
-            get_string('course'),
+            // get_string('course'),
             get_string('date'),
             get_string('status', PLUGIN),
             get_string('total', PLUGIN),
@@ -141,7 +141,8 @@ class order_table extends \table_sql {
         if (empty($row->paymentstatus)) {
             return '-';
         }
-        return get_string($row->paymentstatus, PLUGIN);
+        // return get_string($row->paymentstatus, PLUGIN);
+        return $row->paymentstatus;
     }
 
     /**
@@ -150,9 +151,9 @@ class order_table extends \table_sql {
      * @param  stdClass $row
      * @return string
      */
-    public function col_total($row) {
+    public function col_memo($row) {
         global $DB;
-        return '$150.00';
+        return '$' . $row->memo;
         // return $DB->get_field('local_order_type_subcat', 'name', array('id' => $row->typesubcatid));
     }
 
