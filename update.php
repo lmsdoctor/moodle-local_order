@@ -24,8 +24,6 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_login();
-
-$context = context_system::instance();
 // require_capability('local/credential:addetr', context_system::instance());
 
 global $PAGE, $DB, $USER;
@@ -39,21 +37,27 @@ $urlparams = array('id' => $id, 'action' => $action);
 $orderurl = new moodle_url('/local/order/index.php');
 $pageurl = new moodle_url('/local/order/update.php', $urlparams);
 
+// Javascript/jQuery code is found in amd/src/confirm.js.
+$PAGE->requires->js_call_amd('local_order/confirm', 'init');
+
+$strupdateorder = get_string('updateorder', PLUGIN);
+
+$context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url($pageurl);
-$PAGE->set_title('Update order');
-$PAGE->set_heading('Update order');
+$PAGE->set_title($strupdateorder);
+$PAGE->set_heading($strupdateorder);
 $PAGE->set_pagelayout('standard');
 
 $PAGE->navbar->ignore_active();
 $PAGE->navbar->add(get_string('pluginname', PLUGIN));
 $PAGE->navbar->add('Order', $orderurl);
-$PAGE->navbar->add('Add/Update order');
+$PAGE->navbar->add($strupdateorder);
 
 // Action delete.
 if ($action === 'delete') {
     $DB->delete_records(TABLE, array('id' => $id));
-    redirect($orderurl, 'Deleted', 0, \core\output\notification::NOTIFY_SUCCESS);
+    redirect($orderurl, get_string('deleted', PLUGIN), 0, \core\output\notification::NOTIFY_SUCCESS);
 }
 
 $transaction = $DB->get_record(TABLE, array('id' => $id));
@@ -68,14 +72,33 @@ if ($mform->is_cancelled()) {
 
     // Those are for single transactions.
     if ($formdata->action === 'edit') {
+
+        // Unenroll the student for each course if the status is not completed.
+        if ($formdata->paymentstatus != 'completed') {
+            $sql = 'SELECT d.id, d.courseid, t.userid
+                  FROM {enrol_payment_detail} d
+                  JOIN {enrol_payment_transaction} t ON t.instanceid = d.sessionid
+                 WHERE t.id = :id';
+            $details = $DB->get_records_sql($sql, array('id' => $formdata->id));
+            // Get the enrollment plugin.
+            $plugin = enrol_get_plugin('payment');
+
+            foreach ($details as $detail) {
+                // Enrol user.
+                $params = array('enrol' => 'payment', 'courseid' => $detail->courseid, 'status' => 0);
+                $plugininstance = $DB->get_record('enrol', $params);
+                $plugin->unenrol_user($plugininstance, $detail->userid);
+            }
+        }
+
         $DB->update_record(TABLE, $formdata);
-        $status = 'Updated';
+        $status = get_string('updated', PLUGIN);
         $id = $formdata->id;
     }
 
     if ($formdata->action === 'add') {
         $id = $DB->insert_record(TABLE, $formdata, true, true);
-        $status = 'Saved';
+        $status = get_string('saved', PLUGIN);
     }
 
     redirect($orderurl, $status, 0, \core\output\notification::NOTIFY_SUCCESS);
@@ -94,7 +117,7 @@ if ($mform->is_cancelled()) {
 
     // Display the info.
     echo $OUTPUT->header();
-    echo html_writer::div('Update order', 'mb-5 alert alert-primary');
+    echo html_writer::div($strupdateorder, 'mb-5 alert alert-primary');
     $mform->display();
     echo $OUTPUT->footer();
 

@@ -23,6 +23,26 @@ function($, ModalFactory, ModalEvents) {
                     modal.show();
                 });
             });
+
+            $('#id_submitbutton').on('click', function(e) {
+                e.preventDefault();
+
+                var trigger = $('.create-modal');
+                ModalFactory.create({
+                    type: ModalFactory.types.SAVE_CANCEL,
+                    title: 'Update order status',
+                    body: 'Do you really want to update this order? it may result in unregistering students from their courses.',
+                }, trigger)
+                .done(function(modal) {
+                    modal.getRoot().on(ModalEvents.save, function() {
+                        // Submit the form.
+                        $('form').submit();
+                        // Do not display leaving warning in the browser.
+                        window.onbeforeunload = function() { return undefined; };
+                    });
+                    modal.show();
+                });
+            });
         }
     };
 });

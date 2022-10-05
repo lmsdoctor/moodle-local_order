@@ -34,4 +34,8 @@ $string['completed'] = 'Completed';
 $string['cancelled'] = 'Cancelled';
 $string['refunded'] = 'Refunded';
 $string['failed'] = 'Failed';
+$string['updated'] = 'Updated';
+$string['saved'] = 'Saved';
+$string['updateorder'] = 'Update order';
+$string['deleted'] = 'Deleted';
 
