@@ -45,7 +45,9 @@ class order_table extends \table_sql {
         $columns = array(
             'id',
             'userid',
-            // 'courseid',
+            'email',
+            'ismember',
+            'organization',
             'timeupdated',
             'paymentstatus',
             'memo',
@@ -58,7 +60,9 @@ class order_table extends \table_sql {
         $headers = array(
             get_string('order', PLUGIN),
             get_string('user'),
-            // get_string('course'),
+            get_string('email'),
+            get_string('ismember', PLUGIN),
+            get_string('organization', PLUGIN),
             get_string('date'),
             get_string('status', PLUGIN),
             get_string('total', PLUGIN),
@@ -69,18 +73,54 @@ class order_table extends \table_sql {
     }
 
     /**
-     * This public function is called for each data row to allow processing of the
-     * username value.
+     * Returns the user fullname.
      *
      * @param stdClass $row Contains object with all the values of record.
      * @return string
      */
     public function col_userid($row) {
-        global $DB, $OUTPUT;
+        global $DB;
 
         $user = $DB->get_record('user', array('id' => $row->userid));
         return fullname($user);
 
+    }
+
+    /**
+     * Returns the user fullname.
+     *
+     * @param stdClass $row Contains object with all the values of record.
+     * @return string
+     */
+    public function col_email($row) {
+        global $DB;
+        return $DB->get_field('user', 'email', array('id' => $row->userid));
+    }
+
+    /**
+     * Returns the user fullname.
+     *
+     * @param stdClass $row Contains object with all the values of record.
+     * @return string
+     */
+    public function col_ismember($row) {
+        global $DB;
+        $user = $DB->get_record('user', array('id' => $row->userid));
+        \profile_load_data($user);
+        return $user->profile_field_ismember;
+    }
+
+    /**
+     * Returns the user fullname.
+     *
+     * @param stdClass $row Contains object with all the values of record.
+     * @return string
+     */
+    public function col_organization($row) {
+        global $DB;
+        $user = $DB->get_record('user', array('id' => $row->userid));
+        \profile_load_data($user);
+        return $user->profile_field_organization;
     }
 
     /**

@@ -18,24 +18,25 @@
  * Strings for component 'local_order', language 'en'.
  *
  * @package    local_order
- * @copyright  2018 Seth Yoder <seth.a.yoder@gmail.com>
+ * @copyright  2022 Andres Ramos <andres.ramos@lmsdoctor.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Orders';
-$string['order'] = 'Order #';
-$string['status'] = 'Status';
 $string['actions'] = 'Actions';
-$string['total'] = 'Total';
-$string['pluginname_desc'] = 'Add and update users order';
-$string['pending'] = 'Pending payment';
-$string['on-hold'] = 'On hold';
-$string['completed'] = 'Completed';
 $string['cancelled'] = 'Cancelled';
-$string['refunded'] = 'Refunded';
-$string['failed'] = 'Failed';
-$string['updated'] = 'Updated';
-$string['saved'] = 'Saved';
-$string['updateorder'] = 'Update order';
+$string['completed'] = 'Completed';
 $string['deleted'] = 'Deleted';
-
+$string['failed'] = 'Failed';
+$string['ismember'] = 'Is member';
+$string['on-hold'] = 'On hold';
+$string['order'] = 'Order #';
+$string['organization'] = 'Organization';
+$string['pending'] = 'Pending payment';
+$string['pluginname'] = 'Orders';
+$string['pluginname_desc'] = 'Add and update users order';
+$string['refunded'] = 'Refunded';
+$string['saved'] = 'Saved';
+$string['status'] = 'Status';
+$string['total'] = 'Total';
+$string['updated'] = 'Updated';
+$string['updateorder'] = 'Update order';
