@@ -1,9 +1,27 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Simple file test.php to drop into root of Moodle installation.
- * This is the skeleton code to print a downloadable, paged, sorted table of
- * data from a sql query.
+ * Order page.
+ *
+ * @package    local_order
+ * @copyright  2021 Andres, David Q.
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once(__DIR__ . '/../../config.php');
 require_login();
 
@@ -20,11 +38,11 @@ $download = optional_param('download', '', PARAM_ALPHA);
 define('PLUGIN', 'local_order');
 
 $table = new order_table('uniqueid');
-$table->is_downloading($download, 'test', 'testing123');
+$table->is_downloading($download, 'Orders_' . time(), 'orders');
 
 if (!$table->is_downloading()) {
-    // Only print headers if not asked to download data
-    // Print the page header
+    // Only print headers if not asked to download data.
+    // Print the page header.
     $PAGE->set_title('Orders');
     $PAGE->set_heading('Orders');
     $PAGE->navbar->add('Orders', new moodle_url('/test.php'));
@@ -32,7 +50,7 @@ if (!$table->is_downloading()) {
 }
 
 // Work out the sql for the table.
-$table->set_sql('id,userid,memo,paymentstatus,timeupdated', "{enrol_payment_transaction}", '1=1');
+$table->set_sql('instanceid,userid,memo,paymentstatus,timeupdated', "{enrol_payment_transaction}", '1=1');
 
 $table->define_baseurl("$CFG->wwwroot/local/order/index.php");
 

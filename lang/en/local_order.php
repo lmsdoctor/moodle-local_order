@@ -23,11 +23,13 @@
  */
 
 $string['actions'] = 'Actions';
+$string['amount'] = 'Amount';
 $string['cancelled'] = 'Cancelled';
 $string['completed'] = 'Completed';
 $string['deleted'] = 'Deleted';
 $string['failed'] = 'Failed';
 $string['ismember'] = 'Is member';
+$string['enrollmentdate'] = 'Enrollment date';
 $string['on-hold'] = 'On hold';
 $string['order'] = 'Order #';
 $string['organization'] = 'Organization';

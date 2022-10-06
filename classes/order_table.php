@@ -43,7 +43,7 @@ class order_table extends \table_sql {
 
         // Define the list of columns to show.
         $columns = array(
-            'id',
+            'instanceid',
             'userid',
             'email',
             'ismember',
@@ -136,24 +136,19 @@ class order_table extends \table_sql {
             return '';
         }
 
-        // return $row->courseid;
         return $DB->get_field('course', 'fullname', array('id' => $row->courseid));
 
     }
 
     /**
-     * Returns the time completed.
+     * Returns the id as a link to the detail page.
      *
      * @param  stdClass $row
      * @return string
      */
-    public function col_order($row) {
+    public function col_instanceid($row) {
         global $DB;
-
-        if (empty($row->order)) {
-            return '-';
-        }
-        return $row->order;
+        return html_writer::link(new moodle_url('/local/order/detail.php', array('id' => $row->instanceid)), $row->instanceid);
     }
 
     /**
