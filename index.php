@@ -5,7 +5,8 @@
  * data from a sql query.
  */
 require_once(__DIR__ . '/../../config.php');
-// require_once('./lib.php');
+require_login();
+
 require("$CFG->libdir/tablelib.php");
 
 use local_order\order_table;
