@@ -24,7 +24,7 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_login();
-// require_capability('local/credential:addetr', context_system::instance());
+
 
 global $PAGE, $DB, $USER;
 

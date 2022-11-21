@@ -43,17 +43,15 @@ $table->is_downloading($download, 'Orders_' . time(), 'orders');
 if (!$table->is_downloading()) {
     // Only print headers if not asked to download data.
     // Print the page header.
-    $PAGE->set_title('Orders');
-    $PAGE->set_heading('Orders');
-    $PAGE->navbar->add('Orders', new moodle_url('/test.php'));
+    $PAGE->set_title(get_string('orders', PLUGIN));
+    $PAGE->set_heading(get_string('orders', PLUGIN));
+    $PAGE->navbar->add(get_string('orders', PLUGIN), new moodle_url('/index.php'));
     echo $OUTPUT->header();
 }
 
 // Work out the sql for the table.
-$table->set_sql('instanceid,userid,memo,paymentstatus,timeupdated', "{enrol_payment_transaction}", '1=1');
-
+$table->set_sql('id,instanceid,userid,memo,paymentstatus,timeupdated', "{enrol_payment_transaction}", '1=1');
 $table->define_baseurl("$CFG->wwwroot/local/order/index.php");
-
 $table->out(40, true);
 
 if (!$table->is_downloading()) {

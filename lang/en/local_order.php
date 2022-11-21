@@ -31,6 +31,7 @@ $string['failed'] = 'Failed';
 $string['ismember'] = 'Is member';
 $string['enrollmentdate'] = 'Enrollment date';
 $string['on-hold'] = 'On hold';
+$string['orders'] = 'Orders';
 $string['order'] = 'Order #';
 $string['organization'] = 'Organization';
 $string['pending'] = 'Pending payment';

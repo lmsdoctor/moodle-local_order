@@ -44,30 +44,39 @@ class order_table extends \table_sql {
         // Define the list of columns to show.
         $columns = array(
             'instanceid',
-            'userid',
+            // 'userid',
             'email',
             'ismember',
             'organization',
             'timeupdated',
             'paymentstatus',
+            // 'course',
             'memo',
-            'actions',
         );
+
+        // Display column if not downloading.
+        if (!$this->is_downloading()) {
+            $columns[] = 'actions';
+        }
 
         $this->define_columns($columns);
 
         // Define the titles of columns to show in header.
         $headers = array(
             get_string('order', PLUGIN),
-            get_string('user'),
+            // get_string('user'),
             get_string('email'),
             get_string('ismember', PLUGIN),
             get_string('organization', PLUGIN),
             get_string('date'),
             get_string('status', PLUGIN),
+            // get_string('course'),
             get_string('total', PLUGIN),
-            get_string('actions', PLUGIN),
         );
+
+        if (!$this->is_downloading()) {
+            $headers[] = get_string('actions', PLUGIN);
+        }
         $this->define_headers($headers);
 
     }
@@ -148,7 +157,15 @@ class order_table extends \table_sql {
      */
     public function col_instanceid($row) {
         global $DB;
-        return html_writer::link(new moodle_url('/local/order/detail.php', array('id' => $row->instanceid)), $row->instanceid);
+
+        $user = $DB->get_record('user', array('id' => $row->userid));
+
+        if (!$this->is_downloading()) {
+            return html_writer::link(
+                new moodle_url('/local/order/detail.php', array('id' => $row->instanceid)),
+                '#' . $row->instanceid . ' - ' . fullname($user));
+        }
+        return $row->instanceid . ' - ' . fullname($user);
     }
 
     /**
@@ -158,7 +175,6 @@ class order_table extends \table_sql {
      * @return string
      */
     public function col_timeupdated($row) {
-        global $DB;
 
         if (empty($row->timeupdated)) {
             return '-';
@@ -186,9 +202,24 @@ class order_table extends \table_sql {
      * @return string
      */
     public function col_memo($row) {
-        global $DB;
         return '$' . $row->memo;
-        // return $DB->get_field('local_order_type_subcat', 'name', array('id' => $row->typesubcatid));
+    }
+
+    /**
+     * Returns the course name.
+     *
+     * @param  stdClass $row
+     * @return string
+     */
+    public function col_course($row) {
+        global $DB;
+        $sql = 'SELECT c.fullname
+                  FROM {course} c
+                  JOIN {enrol} e ON e.courseid = c.id
+                  JOIN {user_enrolments} ue ON ue.enrolid = e.id
+                  WHERE ue.id = :id AND e.enrol = :enrol AND ue.userid = :userid';
+        $params = array('enrol' => 'payment', 'userid' => $row->userid, 'id' => $row->instanceid);
+        return $DB->get_field_sql($sql, $params);
     }
 
     /**
@@ -198,17 +229,25 @@ class order_table extends \table_sql {
      * @return string
      */
     public function col_actions($row) {
-        global $OUTPUT, $CFG;
+        global $OUTPUT;
 
-        // Remove the path of the url.
-        $updateurl = new moodle_url('/local/order/update.php',
-            array('id' => $row->id, 'action' => 'edit'));
-        $actions = $OUTPUT->action_icon($updateurl, new pix_icon('i/edit', ''));
+        if (!$this->is_downloading()) {
 
-        $deleteurl = new moodle_url('/local/order/update.php',
-            array('id' => $row->id, 'action' => 'delete', 'class' => 'action-delete'));
-        $actions .= $OUTPUT->action_icon($deleteurl, new pix_icon('i/trash', ''), null, array('class' => 'action-delete'));
+            // Remove the path of the url.
+            $viewdetail = new moodle_url('/local/order/detail.php', array('id' => $row->instanceid));
+            $actions = $OUTPUT->action_icon($viewdetail, new pix_icon('i/search', ''));
 
+            // Remove the path of the url.
+            $updateurl = new moodle_url('/local/order/update.php',
+                array('id' => $row->id, 'action' => 'edit'));
+            $actions .= $OUTPUT->action_icon($updateurl, new pix_icon('i/edit', ''));
+
+            $deleteurl = new moodle_url('/local/order/update.php',
+                array('id' => $row->id, 'action' => 'delete', 'class' => 'action-delete'));
+            $actions .= $OUTPUT->action_icon($deleteurl, new pix_icon('i/trash', ''), null, array('class' => 'action-delete'));
+
+
+        }
         return $actions;
     }
 

@@ -46,7 +46,8 @@ if (!$table->is_downloading()) {
     // Print the page header
     $PAGE->set_title('Order #' . $id);
     $PAGE->set_heading('Order #' . $id);
-    $PAGE->navbar->add('Order detail', new moodle_url('/local/order/detail.php', array('id' => $id)));
+    $PAGE->navbar->add(get_string('orders', PLUGIN), new moodle_url('/local/order/index.php'));
+    $PAGE->navbar->add('Detail');
     echo $OUTPUT->header();
 }
 
