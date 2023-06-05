@@ -176,10 +176,11 @@ class order_table extends \table_sql {
      */
     public function col_timeupdated($row) {
 
-        if (empty($row->timeupdated)) {
+        if (empty($row->updatedat)) {
             return '-';
         }
-        return userdate($row->timeupdated, get_string('strftimedatetimeshort', 'langconfig'));
+        // return userdate($row->updatedat, get_string('strftimedatetimeshort', 'langconfig'));
+        return $row->updatedat;
     }
 
     /**
@@ -189,10 +190,10 @@ class order_table extends \table_sql {
      * @return string
      */
     public function col_paymentstatus($row) {
-        if (empty($row->paymentstatus)) {
+        if (empty($row->status)) {
             return '-';
         }
-        return get_string(strtolower($row->paymentstatus), PLUGIN);
+        return get_string(strtolower($row->status), PLUGIN);
     }
 
     /**
@@ -202,7 +203,7 @@ class order_table extends \table_sql {
      * @return string
      */
     public function col_memo($row) {
-        return '$' . $row->memo;
+        return '$' . $row->value;
     }
 
     /**

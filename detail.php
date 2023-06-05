@@ -71,7 +71,7 @@ echo html_writer::start_div('card');
     echo html_writer::start_div('card-body');
         echo html_writer::tag(
             'p',
-            '<br><b>Transaction date:</b> ' . userdate($transaction->timeupdated, get_string('strftimedatetimeshort', 'langconfig')) .
+            '<br><b>Transaction date:</b> ' . userdate($transaction->updatedat, get_string('strftimedatetimeshort', 'langconfig')) .
             '<br><b>Status:</b> ' . ucfirst($transaction->paymentstatus) .
             '<br><b>Name:</b> ' . fullname($user) . '<br><b>Email:</b> ' . $user->email . '<br>
             <b>City:</b> ' . $user->city . '<br><b>Is member?</b> ' . $user->profile_field_ismember .
