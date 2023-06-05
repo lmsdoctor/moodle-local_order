@@ -33,13 +33,12 @@ defined('MOODLE_INTERNAL') || die();
  * @param navigation_node $navigation The navigation node to extend
  */
 function local_order_extend_navigation($nav) {
-    global $PAGE;
 
     $nodecredential = $nav->add(get_string('pluginname', PLUGINNAME));
 
     if (is_siteadmin()) {
         $discounts = navigation_node::create(
-            'Discounts',
+            get_string('managediscounts', PLUGINNAME),
             new moodle_url('/enrol/payment/coupon/index.php'),
             navigation_node::TYPE_CUSTOM,
             'discounts',
