@@ -34,11 +34,11 @@ defined('MOODLE_INTERNAL') || die();
  */
 function local_order_extend_navigation($nav) {
 
-    $nodecredential = $nav->add(get_string('pluginname', PLUGINNAME));
+    $nodecredential = $nav->add(get_string('pluginname', 'local_order'));
 
     if (is_siteadmin()) {
         $discounts = navigation_node::create(
-            get_string('managediscounts', PLUGINNAME),
+            get_string('managediscounts', 'local_order'),
             new moodle_url('/enrol/payment/coupon/index.php'),
             navigation_node::TYPE_CUSTOM,
             'discounts',
@@ -47,6 +47,17 @@ function local_order_extend_navigation($nav) {
         );
         $discounts->showinflatnavigation = true;
         $nodecredential->add_node($discounts);
+
+        $orders = navigation_node::create(
+            get_string('pluginname', 'local_order'),
+            new moodle_url('/local/order/index.php'),
+            navigation_node::TYPE_CUSTOM,
+            'orders',
+            'orders',
+            new pix_icon('i/report', '')
+        );
+        $orders->showinflatnavigation = true;
+        $nodecredential->add_node($orders);
     }
 
 }
