@@ -18,7 +18,7 @@
  * Update order form.
  *
  * @package   local_order
- * @copyright 2021 Andres, David Q <andresmao2@gmail.com>
+ * @copyright 2021 Andres <andresmao2@gmail.com>, David Q.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -49,6 +49,7 @@ class order_form extends moodleform {
         $mform->setType('action', PARAM_TEXT);
 
         $status = array(
+            'select' => 'Select a status',
             'pending' => 'Pending payment',
             'on-hold' => 'On hold',
             'completed' => 'Completed',

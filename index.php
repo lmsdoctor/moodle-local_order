@@ -45,12 +45,11 @@ if (!$table->is_downloading()) {
     // Print the page header.
     $PAGE->set_title(get_string('orders', PLUGIN));
     $PAGE->set_heading(get_string('orders', PLUGIN));
-    $PAGE->navbar->add(get_string('orders', PLUGIN), new moodle_url('/index.php'));
     echo $OUTPUT->header();
 }
 
 // Work out the sql for the table.
-$table->set_sql('id,instanceid,userid,value,status,updatedat', "{enrol_payment_transactionv2}", '1=1');
+$table->set_sql('id,sessionid,userid,userids,courseid,value,status,updatedat', "{enrol_payment_transactionv2}", '1=1');
 $table->define_baseurl("$CFG->wwwroot/local/order/index.php");
 $table->out(40, true);
 

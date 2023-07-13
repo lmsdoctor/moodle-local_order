@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Order form page.
+ * Update order form page.
  *
  * @package    local_order
  * @copyright  2021 Andres, David Q.
@@ -24,7 +24,6 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_login();
-
 
 global $PAGE, $DB, $USER;
 
@@ -51,7 +50,7 @@ $PAGE->set_pagelayout('standard');
 
 $PAGE->navbar->ignore_active();
 $PAGE->navbar->add(get_string('pluginname', PLUGIN));
-$PAGE->navbar->add('Order', $orderurl);
+$PAGE->navbar->add(get_string('order', PLUGIN), $orderurl);
 $PAGE->navbar->add($strupdateorder);
 
 // Action delete.
@@ -74,22 +73,22 @@ if ($mform->is_cancelled()) {
     if ($formdata->action === 'edit') {
 
         // Unenroll the student for each course if the status is not completed.
-        if ($formdata->paymentstatus != 'completed') {
-            $sql = 'SELECT d.id, d.courseid, t.userid
-                  FROM {enrol_payment_detail} d
-                  JOIN {enrol_payment_transaction} t ON t.instanceid = d.sessionid
-                 WHERE t.id = :id';
-            $details = $DB->get_records_sql($sql, array('id' => $formdata->id));
-            // Get the enrollment plugin.
-            $plugin = enrol_get_plugin('payment');
+        // if ($formdata->paymentstatus != 'completed') {
+        //     $sql = 'SELECT d.id, d.courseid, t.userid
+        //           FROM {enrol_payment_detail} d
+        //           JOIN {enrol_payment_transaction} t ON t.instanceid = d.sessionid
+        //          WHERE t.id = :id';
+        //     $details = $DB->get_records_sql($sql, array('id' => $formdata->id));
+        //     // Get the enrollment plugin.
+        //     $plugin = enrol_get_plugin('payment');
 
-            foreach ($details as $detail) {
-                // Enrol user.
-                $params = array('enrol' => 'payment', 'courseid' => $detail->courseid, 'status' => 0);
-                $plugininstance = $DB->get_record('enrol', $params);
-                $plugin->unenrol_user($plugininstance, $detail->userid);
-            }
-        }
+        //     foreach ($details as $detail) {
+        //         // Enrol user.
+        //         $params = array('enrol' => 'payment', 'courseid' => $detail->courseid, 'status' => 0);
+        //         $plugininstance = $DB->get_record('enrol', $params);
+        //         $plugin->unenrol_user($plugininstance, $detail->userid);
+        //     }
+        // }
 
         $DB->update_record(TABLE, $formdata);
         $status = get_string('updated', PLUGIN);
@@ -108,7 +107,7 @@ if ($mform->is_cancelled()) {
     // Set default data (if any).
     $toform = array(
         'id' => $id,
-        'paymentstatus' => $transaction->paymentstatus,
+        'paymentstatus' => $transaction->status,
         'action' => $action,
         'userid' => $USER->id
     );

@@ -17,8 +17,8 @@
 /**
  * Session table.
  *
- * @package    report_bigbluebuttonsessions
- * @copyright  2021 LMS Doctor, Solin
+ * @package    local_order
+ * @copyright  2023 LMS Doctor
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -43,15 +43,14 @@ class order_table extends \table_sql {
 
         // Define the list of columns to show.
         $columns = array(
-            'instanceid',
-            // 'userid',
-            'email',
-            // 'ismember',
-            // 'organization',
-            'timeupdated',
-            'paymentstatus',
-            // 'course',
-            'memo',
+            'id',
+            'userid',
+            'userids',
+            'courseid',
+            'updatedat',
+            'discountcode',
+            'status',
+            'value',
         );
 
         // Display column if not downloading.
@@ -64,13 +63,12 @@ class order_table extends \table_sql {
         // Define the titles of columns to show in header.
         $headers = array(
             get_string('order', PLUGIN),
-            // get_string('user'),
-            get_string('email'),
-            // get_string('ismember', PLUGIN),
-            // get_string('organization', PLUGIN),
+            'Purchased by',
+            'Enrolled users',
+            get_string('course'),
             get_string('date'),
+            'Discount code',
             get_string('status', PLUGIN),
-            // get_string('course'),
             get_string('total', PLUGIN),
         );
 
@@ -91,7 +89,7 @@ class order_table extends \table_sql {
         global $DB;
 
         $user = $DB->get_record('user', array('id' => $row->userid));
-        return fullname($user);
+        return $user->email;
 
     }
 
@@ -101,35 +99,18 @@ class order_table extends \table_sql {
      * @param stdClass $row Contains object with all the values of record.
      * @return string
      */
-    public function col_email($row) {
+    public function col_userids($row) {
         global $DB;
-        return $DB->get_field('user', 'email', array('id' => $row->userid));
-    }
 
-    /**
-     * Returns the user fullname.
-     *
-     * @param stdClass $row Contains object with all the values of record.
-     * @return string
-     */
-    public function col_ismember($row) {
-        global $DB;
-        $user = $DB->get_record('user', array('id' => $row->userid));
-        \profile_load_data($user);
-        return $user->profile_field_ismember;
-    }
+        $userids = explode(',', $row->userids);
+        $userlist = array();
+        foreach ($userids as $userid) {
+            $user = $DB->get_record('user', array('id' => $userid));
+            $userlist[] = fullname($user);
+        }
 
-    /**
-     * Returns the user fullname.
-     *
-     * @param stdClass $row Contains object with all the values of record.
-     * @return string
-     */
-    public function col_organization($row) {
-        global $DB;
-        $user = $DB->get_record('user', array('id' => $row->userid));
-        \profile_load_data($user);
-        return $user->profile_field_organization;
+        return implode(', ', $userlist);
+
     }
 
     /**
@@ -145,7 +126,7 @@ class order_table extends \table_sql {
             return '';
         }
 
-        return $DB->get_field('course', 'fullname', array('id' => $row->courseid));
+        return $DB->get_field('course', 'shortname', array('id' => $row->courseid));
 
     }
 
@@ -155,17 +136,11 @@ class order_table extends \table_sql {
      * @param  stdClass $row
      * @return string
      */
-    public function col_instanceid($row) {
+    public function col_id($row) {
         global $DB;
 
         $user = $DB->get_record('user', array('id' => $row->userid));
-
-        if (!$this->is_downloading()) {
-            return html_writer::link(
-                new moodle_url('/local/order/detail.php', array('id' => $row->instanceid)),
-                '#' . $row->instanceid . ' - ' . fullname($user));
-        }
-        return $row->instanceid . ' - ' . fullname($user);
+        return $row->sessionid;
     }
 
     /**
@@ -174,7 +149,7 @@ class order_table extends \table_sql {
      * @param  stdClass $row
      * @return string
      */
-    public function col_timeupdated($row) {
+    public function col_updatedat($row) {
 
         if (empty($row->updatedat)) {
             return '-';
@@ -188,11 +163,26 @@ class order_table extends \table_sql {
      * @param  stdClass $row
      * @return string
      */
-    public function col_paymentstatus($row) {
+    public function col_status($row) {
         if (empty($row->status)) {
             return '-';
         }
         return get_string(strtolower($row->status), PLUGIN);
+    }
+
+    /**
+     * Returns the license type.
+     *
+     * @param  stdClass $row
+     * @return string
+     */
+    public function col_discountcode($row) {
+        global $DB;
+        $coupon = $DB->get_field('enrol_payment_sessionv2', 'coupon', array('id' => $row->sessionid));
+        if (empty($coupon)) {
+            $coupon = '-';
+        }
+        return $coupon;
     }
 
     /**
@@ -201,25 +191,8 @@ class order_table extends \table_sql {
      * @param  stdClass $row
      * @return string
      */
-    public function col_memo($row) {
+    public function col_value($row) {
         return '$' . $row->value;
-    }
-
-    /**
-     * Returns the course name.
-     *
-     * @param  stdClass $row
-     * @return string
-     */
-    public function col_course($row) {
-        global $DB;
-        $sql = 'SELECT c.fullname
-                  FROM {course} c
-                  JOIN {enrol} e ON e.courseid = c.id
-                  JOIN {user_enrolments} ue ON ue.enrolid = e.id
-                  WHERE ue.id = :id AND e.enrol = :enrol AND ue.userid = :userid';
-        $params = array('enrol' => 'payment', 'userid' => $row->userid, 'id' => $row->instanceid);
-        return $DB->get_field_sql($sql, $params);
     }
 
     /**
@@ -234,13 +207,9 @@ class order_table extends \table_sql {
         if (!$this->is_downloading()) {
 
             // Remove the path of the url.
-            $viewdetail = new moodle_url('/local/order/detail.php', array('id' => $row->instanceid));
-            $actions = $OUTPUT->action_icon($viewdetail, new pix_icon('i/search', ''));
-
-            // Remove the path of the url.
             $updateurl = new moodle_url('/local/order/update.php',
                 array('id' => $row->id, 'action' => 'edit'));
-            $actions .= $OUTPUT->action_icon($updateurl, new pix_icon('i/edit', ''));
+            $actions = $OUTPUT->action_icon($updateurl, new pix_icon('i/edit', ''));
 
             $deleteurl = new moodle_url('/local/order/update.php',
                 array('id' => $row->id, 'action' => 'delete', 'class' => 'action-delete'));
