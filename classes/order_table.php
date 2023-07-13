@@ -46,8 +46,8 @@ class order_table extends \table_sql {
             'instanceid',
             // 'userid',
             'email',
-            'ismember',
-            'organization',
+            // 'ismember',
+            // 'organization',
             'timeupdated',
             'paymentstatus',
             // 'course',
@@ -66,8 +66,8 @@ class order_table extends \table_sql {
             get_string('order', PLUGIN),
             // get_string('user'),
             get_string('email'),
-            get_string('ismember', PLUGIN),
-            get_string('organization', PLUGIN),
+            // get_string('ismember', PLUGIN),
+            // get_string('organization', PLUGIN),
             get_string('date'),
             get_string('status', PLUGIN),
             // get_string('course'),
@@ -179,8 +179,7 @@ class order_table extends \table_sql {
         if (empty($row->updatedat)) {
             return '-';
         }
-        // return userdate($row->updatedat, get_string('strftimedatetimeshort', 'langconfig'));
-        return $row->updatedat;
+        return userdate($row->updatedat, get_string('strftimedatetimeshort', 'langconfig'));
     }
 
     /**

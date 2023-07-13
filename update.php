@@ -29,7 +29,7 @@ require_login();
 global $PAGE, $DB, $USER;
 
 define('PLUGIN', 'local_order');
-define('TABLE', 'enrol_payment_transaction');
+define('TABLE', 'enrol_payment_transactionv2');
 
 $id = optional_param('id', 0, PARAM_INT);
 $action = optional_param('action', '', PARAM_TEXT);

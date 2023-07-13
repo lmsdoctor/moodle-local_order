@@ -57,7 +57,7 @@ $table->set_sql('id,sessionid,courseid,amount', "{enrol_payment_detail}", 'sessi
 $table->define_baseurl("$CFG->wwwroot/local/order/detail.php");
 
 // Get the user records to display it.
-$transaction = $DB->get_record('enrol_payment_transaction', array('instanceid' => $id));
+$transaction = $DB->get_record('enrol_payment_transactionv2', array('instanceid' => $id));
 $user = $DB->get_record('user', array('id' => $transaction->userid));
 profile_load_data($user);
 $organization = ($user->profile_field_organization == 'My organization is not here') ? 'None' : $user->profile_field_organization;
@@ -72,10 +72,9 @@ echo html_writer::start_div('card');
         echo html_writer::tag(
             'p',
             '<br><b>Transaction date:</b> ' . userdate($transaction->updatedat, get_string('strftimedatetimeshort', 'langconfig')) .
-            '<br><b>Status:</b> ' . ucfirst($transaction->paymentstatus) .
+            '<br><b>Status:</b> ' . ucfirst($transaction->status) .
             '<br><b>Name:</b> ' . fullname($user) . '<br><b>Email:</b> ' . $user->email . '<br>
-            <b>City:</b> ' . $user->city . '<br><b>Is member?</b> ' . $user->profile_field_ismember .
-            '<br><b>Organization:</b> ' . $organization ,
+            <b>City:</b> ' . $user->city,
             array('class' => 'card-text'),
         );
     echo html_writer::end_div();
