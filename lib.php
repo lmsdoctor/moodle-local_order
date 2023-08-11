@@ -38,8 +38,8 @@ function local_order_extend_navigation($nav) {
 
     if (is_siteadmin()) {
         $discounts = navigation_node::create(
-            get_string('managediscounts', 'local_order'),
-            new moodle_url('/enrol/payment/coupon/index.php'),
+            get_string('discountcodes', 'local_order'),
+            new moodle_url('/enrol/payment/discount/index.php'),
             navigation_node::TYPE_CUSTOM,
             'discounts',
             'discounts',

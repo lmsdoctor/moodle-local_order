@@ -31,6 +31,7 @@ $string['complete'] = 'Complete';
 $string['detail'] = 'Detail';
 $string['deleted'] = 'Deleted';
 $string['discounts'] = 'Discounts';
+$string['discountcodes'] = 'Discount Codes';
 $string['managediscounts'] = 'Manage Discounts';
 $string['failed'] = 'Failed';
 $string['ismember'] = 'Is member';
