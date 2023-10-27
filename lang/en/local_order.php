@@ -48,6 +48,7 @@ $string['pluginname_desc'] = 'Add and update users order';
 $string['refunded'] = 'Refunded';
 $string['saved'] = 'Saved';
 $string['status'] = 'Status';
+$string['selectstatus'] = 'Select a status';
 $string['transactiondate'] = 'Total';
 $string['total'] = 'Total';
 $string['updated'] = 'Updated';

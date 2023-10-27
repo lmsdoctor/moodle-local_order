@@ -49,15 +49,29 @@ class order_form extends moodleform {
         $mform->setType('action', PARAM_TEXT);
 
         $status = array(
-            'select' => 'Select a status',
-            'pending' => 'Pending payment',
-            'on-hold' => 'On hold',
-            'completed' => 'Completed',
+            'select' => get_string('selectstatus', PLUGIN),
+            'pending' => get_string('pending', PLUGIN),
+            'on-hold' => get_string('on-hold', PLUGIN),
+            'completed' => get_string('completed', PLUGIN),
             'cancelled' => 'Cancelled',
             'refunded' => 'Refunded',
             'failed' => 'Failed',
         );
-        $mform->addElement('select', 'paymentstatus', get_string('status', PLUGIN), $status);
+
+        if (!empty($this->_customdata->gateway && $this->_customdata->gateway == 'stripe')) {
+            $status = array(
+                'select' => get_string('selectstatus', PLUGIN),
+                'open' => 'Open',
+                'pending' => get_string('pending', PLUGIN),
+                'on-hold' => get_string('on-hold', PLUGIN),
+                'complete' => get_string('complete', PLUGIN),
+                'cancelled' => 'Cancelled',
+                'refunded' => 'Refunded',
+                'failed' => 'Failed',
+            );
+        }
+
+        $mform->addElement('select', 'status', get_string('status', PLUGIN), $status);
 
         $this->add_action_buttons(true, get_string('save'));
 

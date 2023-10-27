@@ -89,14 +89,15 @@ if ($mform->is_cancelled()) {
         //         $plugin->unenrol_user($plugininstance, $detail->userid);
         //     }
         // }
-
+        // print_object($formdata);
+        // die();
         $DB->update_record(TABLE, $formdata);
         $status = get_string('updated', PLUGIN);
         $id = $formdata->id;
     }
 
     if ($formdata->action === 'add') {
-        $id = $DB->insert_record(TABLE, $formdata, true, true);
+        $DB->insert_record(TABLE, $formdata, true, true);
         $status = get_string('saved', PLUGIN);
     }
 
@@ -107,7 +108,7 @@ if ($mform->is_cancelled()) {
     // Set default data (if any).
     $toform = array(
         'id' => $id,
-        'paymentstatus' => $transaction->status,
+        'status' => $transaction->status,
         'action' => $action,
         'userid' => $USER->id
     );
