@@ -18,12 +18,12 @@
  * Version file.
  *
  * @package    local_order
- * @copyright  2021 Andres, David Q.
+ * @copyright  2023 Andres, David Q.
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2023102700;
+$plugin->version = 2023122000;
 $plugin->requires = 2018051200;
 $plugin->component = "local_order";

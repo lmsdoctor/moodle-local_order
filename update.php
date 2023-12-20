@@ -27,6 +27,10 @@ require_login();
 
 global $PAGE, $DB, $USER;
 
+if (!has_capability('enrol/payment:manage', $context)) {
+    redirect(new moodle_url('/my'), get_string('requiredpermissions', PLUGINNAME), 0, notification::NOTIFY_WARNING);
+}
+
 define('PLUGIN', 'local_order');
 define('TABLE', 'enrol_payment_transactionv2');
 

@@ -25,6 +25,10 @@
 require_once(__DIR__ . '/../../config.php');
 require_login();
 
+if (!has_capability('enrol/payment:manage', $context)) {
+    redirect(new moodle_url('/my'), get_string('requiredpermissions', PLUGINNAME), 0, notification::NOTIFY_WARNING);
+}
+
 require("$CFG->libdir/tablelib.php");
 
 use local_order\order_table;

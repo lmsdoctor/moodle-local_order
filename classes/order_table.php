@@ -63,11 +63,11 @@ class order_table extends \table_sql {
         // Define the titles of columns to show in header.
         $headers = array(
             get_string('order', PLUGIN),
-            'Purchased by',
-            'Enrolled users',
+            get_string('purchasedby', PLUGIN),
+            get_string('enrolleduser', PLUGIN),
             get_string('course'),
             get_string('date'),
-            'Discount code',
+            get_string('discountcode', PLUGIN),
             get_string('status', PLUGIN),
             get_string('total', PLUGIN),
         );
