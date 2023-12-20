@@ -35,7 +35,7 @@ $PAGE->set_context($context);
 $PAGE->set_url('/local/order/index.php');
 
 if (!has_capability('enrol/payment:manage', $context)) {
-    redirect(new moodle_url('/my'), get_string('requiredpermissions', PLUGINNAME), 0, notification::NOTIFY_WARNING);
+    redirect(new moodle_url('/my'), get_string('requiredpermissions', 'enrol_payment'), 0, notification::NOTIFY_WARNING);
 }
 
 $PAGE->requires->js_call_amd('local_order/confirm', 'init');
