@@ -27,12 +27,10 @@ require_login();
 
 global $PAGE, $DB, $USER;
 
-if (!has_capability('enrol/payment:manage', $context)) {
-    redirect(new moodle_url('/my'), get_string('requiredpermissions', PLUGINNAME), 0, notification::NOTIFY_WARNING);
-}
-
 define('PLUGIN', 'local_order');
 define('TABLE', 'enrol_payment_transactionv2');
+
+use \core\output\notification;
 
 $id = optional_param('id', 0, PARAM_INT);
 $action = optional_param('action', '', PARAM_TEXT);
@@ -51,6 +49,10 @@ $PAGE->set_url($pageurl);
 $PAGE->set_title($strupdateorder);
 $PAGE->set_heading($strupdateorder);
 $PAGE->set_pagelayout('standard');
+
+if (!has_capability('enrol/payment:manage', $context)) {
+    redirect(new moodle_url('/my'), get_string('requiredpermissions', 'enrol_payment'), 0, notification::NOTIFY_WARNING);
+}
 
 $PAGE->navbar->ignore_active();
 $PAGE->navbar->add(get_string('pluginname', PLUGIN));
