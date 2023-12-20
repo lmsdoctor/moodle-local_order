@@ -28,6 +28,7 @@ require_login();
 require("$CFG->libdir/tablelib.php");
 
 use local_order\order_table;
+use \core\output\notification;
 
 $context = context_system::instance();
 $PAGE->set_context($context);
