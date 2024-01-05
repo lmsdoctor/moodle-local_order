@@ -23,6 +23,8 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
+require_once(dirname(__FILE__) . '/global.php');
+
 require_login();
 
 global $DB;
@@ -45,18 +47,18 @@ if (!$table->is_downloading()) {
     // Print the page header
     $PAGE->set_title('Order #' . $id);
     $PAGE->set_heading('Order #' . $id);
-    $PAGE->navbar->add(get_string('orders', PLUGINNAME), new moodle_url('/local/order/index.php'));
+    $PAGE->navbar->add(get_string('orders', PLUGINNAME), new moodle_url(HOME));
     $PAGE->navbar->add('Detail');
     echo $OUTPUT->header();
 }
 
 // Work out the sql for the table.
-$table->set_sql('id,sessionid,courseid,amount', "{enrol_payment_detail}", 'sessionid = ?', array($id));
+$table->set_sql('id,sessionid,courseid,amount', "{" . TABLE_DETAIL . "}", 'sessionid = ?', array($id));
 
 $table->define_baseurl($CFG->wwwroot . DETAILURL);
 
 // Get the user records to display it.
-$transaction = $DB->get_record('enrol_payment_transaction', array('instanceid' => $id));
+$transaction = $DB->get_record(TABLE_TRAN, array('instanceid' => $id));
 $user = $DB->get_record('user', array('id' => $transaction->userid));
 profile_load_data($user);
 $organization = ($user->profile_field_organization == 'My organization is not here') ? 'None' : $user->profile_field_organization;

@@ -28,6 +28,7 @@ define('PLUGINNAME', 'local_order');
 define('HOME', '/local/order/index.php');
 define('DETAILURL', '/local/order/detail.php');
 define('UPDATEURL', '/local/order/update.php');
+define('PLUGINAMD', PLUGINNAME . '/confirm');
 
 define('TABLE_TRAN', 'enrol_payment_transaction');
 define('TABLE_DETAIL', 'enrol_payment_detail');

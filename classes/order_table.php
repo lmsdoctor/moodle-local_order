@@ -28,6 +28,8 @@ use moodle_url;
 use pix_icon;
 use html_writer;
 
+require_once(dirname(__FILE__, 3) . '/global.php');
+
 /**
  * Overall table class.
  */

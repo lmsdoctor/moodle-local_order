@@ -23,6 +23,8 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
+require_once(dirname(__FILE__) . '/global.php');
+
 require_login();
 
 require("$CFG->libdir/tablelib.php");
@@ -35,7 +37,6 @@ $PAGE->set_url(HOME);
 $PAGE->requires->js_call_amd('local_order/confirm', 'init');
 
 $download = optional_param('download', '', PARAM_ALPHA);
-
 
 $table = new order_table('uniqueid');
 $table->is_downloading($download, 'Orders_' . time(), 'orders');

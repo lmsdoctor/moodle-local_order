@@ -23,7 +23,12 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
+require_once(dirname(__FILE__) . '/global.php');
+
 require_login();
+
+use \core\output\notification;
+use \local_order\form\order_form;
 
 global $PAGE, $DB, $USER;
 
@@ -35,7 +40,7 @@ $orderurl = new moodle_url(HOME);
 $pageurl = new moodle_url(UPDATEURL, $urlparams);
 
 // Javascript/jQuery code is found in amd/src/confirm.js.
-$PAGE->requires->js_call_amd('local_order/confirm', 'init');
+$PAGE->requires->js_call_amd(PLUGINAMD, 'init');
 
 $strupdateorder = get_string('updateorder', PLUGINNAME);
 
@@ -54,13 +59,13 @@ $PAGE->navbar->add($strupdateorder);
 // Action delete.
 if ($action === 'delete') {
     $DB->delete_records(TABLE_TRAN, array('id' => $id));
-    redirect($orderurl, get_string('deleted', PLUGINNAME), 0, \core\output\notification::NOTIFY_SUCCESS);
+    redirect($orderurl, get_string('deleted', PLUGINNAME), 0, notification::NOTIFY_SUCCESS);
 }
 
 $transaction = $DB->get_record(TABLE_TRAN, array('id' => $id));
 $transaction->action = $action;
 
-$mform = new \local_order\form\order_form(null, $transaction);
+$mform = new order_form(null, $transaction);
 
 // Form processing and displaying is done here.
 if ($mform->is_cancelled()) {
@@ -71,12 +76,10 @@ if ($mform->is_cancelled()) {
     if ($formdata->action === 'edit') {
 
         // Unenroll the student for each course if the status is not completed.
-        $tabledetail = TABLE_DETAIL;
-        $tabletransaction = TABLE_TRAN;
         if ($formdata->paymentstatus != 'completed') {
             $sql = 'SELECT d.id, d.courseid, t.userid
-                      FROM {' . $tabledetail . '} d
-                      JOIN {' . $tabletransaction . '} t ON t.instanceid = d.sessionid
+                      FROM {' . TABLE_DETAIL . '} d
+                      JOIN {' . TABLE_TRAN . '} t ON t.instanceid = d.sessionid
                      WHERE t.id = :id';
             $details = $DB->get_records_sql($sql, array('id' => $formdata->id));
             // Get the enrollment plugin.
@@ -100,7 +103,7 @@ if ($mform->is_cancelled()) {
         $status = get_string('saved', PLUGINNAME);
     }
 
-    redirect($orderurl, $status, 0, \core\output\notification::NOTIFY_SUCCESS);
+    redirect($orderurl, $status, 0, notification::NOTIFY_SUCCESS);
 } else {
 
     // Set default data (if any).

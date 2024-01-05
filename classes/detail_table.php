@@ -29,7 +29,9 @@ use pix_icon;
 use html_writer;
 
 global $CFG;
+
 require_once($CFG->dirroot . '/lib/enrollib.php');
+require_once(dirname(__FILE__, 3) . '/global.php');
 
 /**
  * Overall table class.
