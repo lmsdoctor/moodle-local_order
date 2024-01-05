@@ -63,22 +63,21 @@ class order_table extends \table_sql {
 
         // Define the titles of columns to show in header.
         $headers = array(
-            get_string('order', PLUGIN),
+            get_string('order', PLUGINNAME),
             // get_string('user'),
             get_string('email'),
-            get_string('ismember', PLUGIN),
-            get_string('organization', PLUGIN),
+            get_string('ismember', PLUGINNAME),
+            get_string('organization', PLUGINNAME),
             get_string('date'),
-            get_string('status', PLUGIN),
+            get_string('status', PLUGINNAME),
             // get_string('course'),
-            get_string('total', PLUGIN),
+            get_string('total', PLUGINNAME),
         );
 
         if (!$this->is_downloading()) {
-            $headers[] = get_string('actions', PLUGIN);
+            $headers[] = get_string('actions', PLUGINNAME);
         }
         $this->define_headers($headers);
-
     }
 
     /**
@@ -92,7 +91,6 @@ class order_table extends \table_sql {
 
         $user = $DB->get_record('user', array('id' => $row->userid));
         return fullname($user);
-
     }
 
     /**
@@ -146,7 +144,6 @@ class order_table extends \table_sql {
         }
 
         return $DB->get_field('course', 'fullname', array('id' => $row->courseid));
-
     }
 
     /**
@@ -162,8 +159,9 @@ class order_table extends \table_sql {
 
         if (!$this->is_downloading()) {
             return html_writer::link(
-                new moodle_url('/local/order/detail.php', array('id' => $row->instanceid)),
-                '#' . $row->instanceid . ' - ' . fullname($user));
+                new moodle_url(DETAILURL, array('id' => $row->instanceid)),
+                '#' . $row->instanceid . ' - ' . fullname($user)
+            );
         }
         return $row->instanceid . ' - ' . fullname($user);
     }
@@ -192,7 +190,7 @@ class order_table extends \table_sql {
         if (empty($row->paymentstatus)) {
             return '-';
         }
-        return get_string(strtolower($row->paymentstatus), PLUGIN);
+        return get_string(strtolower($row->paymentstatus), PLUGINNAME);
     }
 
     /**
@@ -234,21 +232,22 @@ class order_table extends \table_sql {
         if (!$this->is_downloading()) {
 
             // Remove the path of the url.
-            $viewdetail = new moodle_url('/local/order/detail.php', array('id' => $row->instanceid));
-            $actions = $OUTPUT->action_icon($viewdetail, new pix_icon('i/search', ''));
+            $viewdetail = new moodle_url(DETAILURL, array('id' => $row->instanceid));
+            $actions = $OUTPUT->action_icon($viewdetail, new pix_icon('i/search', 'search'));
 
             // Remove the path of the url.
-            $updateurl = new moodle_url('/local/order/update.php',
-                array('id' => $row->id, 'action' => 'edit'));
-            $actions .= $OUTPUT->action_icon($updateurl, new pix_icon('i/edit', ''));
+            $updateurl = new moodle_url(
+                UPDATEURL,
+                array('id' => $row->id, 'action' => 'edit')
+            );
+            $actions .= $OUTPUT->action_icon($updateurl, new pix_icon('i/edit', 'edit'));
 
-            $deleteurl = new moodle_url('/local/order/update.php',
-                array('id' => $row->id, 'action' => 'delete', 'class' => 'action-delete'));
-            $actions .= $OUTPUT->action_icon($deleteurl, new pix_icon('i/trash', ''), null, array('class' => 'action-delete'));
-
-
+            $deleteurl = new moodle_url(
+                UPDATEURL,
+                array('id' => $row->id, 'action' => 'delete', 'class' => 'action-delete')
+            );
+            $actions .= $OUTPUT->action_icon($deleteurl, new pix_icon('i/trash', 'trash'), null, array('class' => 'action-delete'));
         }
         return $actions;
     }
-
 }

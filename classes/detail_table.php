@@ -27,6 +27,7 @@ namespace local_order;
 use moodle_url;
 use pix_icon;
 use html_writer;
+
 global $CFG;
 require_once($CFG->dirroot . '/lib/enrollib.php');
 
@@ -55,11 +56,10 @@ class detail_table extends \table_sql {
         // Define the titles of columns to show in header.
         $headers = array(
             get_string('course'),
-            get_string('amount', PLUGIN),
-            get_string('enrollmentdate', PLUGIN),
+            get_string('amount', PLUGINNAME),
+            get_string('enrollmentdate', PLUGINNAME),
         );
         $this->define_headers($headers);
-
     }
 
     /**
@@ -88,7 +88,7 @@ class detail_table extends \table_sql {
         global $DB;
 
         // Get the transaction first.
-        $transaction = $DB->get_record('enrol_payment_transaction', array('instanceid' => $row->sessionid));
+        $transaction = $DB->get_record(TABLE_TRAN, array('instanceid' => $row->sessionid));
 
         $params = array('enrol' => 'payment', 'courseid' => $row->courseid, 'status' => 0);
         $enrol = $DB->get_record('enrol', $params);
@@ -115,5 +115,4 @@ class detail_table extends \table_sql {
         }
         return '$' . $row->amount;
     }
-
 }

@@ -31,11 +31,11 @@ use local_order\order_table;
 
 $context = context_system::instance();
 $PAGE->set_context($context);
-$PAGE->set_url('/local/order/index.php');
+$PAGE->set_url(HOME);
 $PAGE->requires->js_call_amd('local_order/confirm', 'init');
 
 $download = optional_param('download', '', PARAM_ALPHA);
-define('PLUGIN', 'local_order');
+
 
 $table = new order_table('uniqueid');
 $table->is_downloading($download, 'Orders_' . time(), 'orders');
@@ -43,15 +43,15 @@ $table->is_downloading($download, 'Orders_' . time(), 'orders');
 if (!$table->is_downloading()) {
     // Only print headers if not asked to download data.
     // Print the page header.
-    $PAGE->set_title(get_string('orders', PLUGIN));
-    $PAGE->set_heading(get_string('orders', PLUGIN));
-    $PAGE->navbar->add(get_string('orders', PLUGIN), new moodle_url('/index.php'));
+    $PAGE->set_title(get_string('orders', PLUGINNAME));
+    $PAGE->set_heading(get_string('orders', PLUGINNAME));
+    $PAGE->navbar->add(get_string('orders', PLUGINNAME), new moodle_url('/index.php'));
     echo $OUTPUT->header();
 }
 
 // Work out the sql for the table.
 $table->set_sql('id,instanceid,userid,memo,paymentstatus,timeupdated', "{enrol_payment_transaction}", '1=1');
-$table->define_baseurl("$CFG->wwwroot/local/order/index.php");
+$table->define_baseurl($CFG->wwwroot . HOME);
 $table->out(40, true);
 
 if (!$table->is_downloading()) {

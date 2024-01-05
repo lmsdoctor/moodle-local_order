@@ -33,20 +33,19 @@ use local_order\detail_table;
 
 $context = context_system::instance();
 $PAGE->set_context($context);
-$PAGE->set_url('/local/order/detail.php');
+$PAGE->set_url(DETAILURL);
 
 $id = required_param('id', PARAM_INT);
-define('PLUGIN', 'local_order');
 
 $table = new detail_table('uniqueid');
-$table->is_downloading($download, 'Details_' . time() , 'details');
+$table->is_downloading($download, 'Details_' . time(), 'details');
 
 if (!$table->is_downloading()) {
     // Only print headers if not asked to download data
     // Print the page header
     $PAGE->set_title('Order #' . $id);
     $PAGE->set_heading('Order #' . $id);
-    $PAGE->navbar->add(get_string('orders', PLUGIN), new moodle_url('/local/order/index.php'));
+    $PAGE->navbar->add(get_string('orders', PLUGINNAME), new moodle_url('/local/order/index.php'));
     $PAGE->navbar->add('Detail');
     echo $OUTPUT->header();
 }
@@ -54,7 +53,7 @@ if (!$table->is_downloading()) {
 // Work out the sql for the table.
 $table->set_sql('id,sessionid,courseid,amount', "{enrol_payment_detail}", 'sessionid = ?', array($id));
 
-$table->define_baseurl("$CFG->wwwroot/local/order/detail.php");
+$table->define_baseurl($CFG->wwwroot . DETAILURL);
 
 // Get the user records to display it.
 $transaction = $DB->get_record('enrol_payment_transaction', array('instanceid' => $id));
@@ -64,21 +63,21 @@ $organization = ($user->profile_field_organization == 'My organization is not he
 
 // Open card.
 echo html_writer::start_div('card');
-    echo html_writer::start_div('card-header');
-        echo 'Buyer information';
-    echo html_writer::end_div();
-    // List.
-    echo html_writer::start_div('card-body');
-        echo html_writer::tag(
-            'p',
-            '<br><b>Transaction date:</b> ' . userdate($transaction->timeupdated, get_string('strftimedatetimeshort', 'langconfig')) .
-            '<br><b>Status:</b> ' . ucfirst($transaction->paymentstatus) .
-            '<br><b>Name:</b> ' . fullname($user) . '<br><b>Email:</b> ' . $user->email . '<br>
+echo html_writer::start_div('card-header');
+echo 'Buyer information';
+echo html_writer::end_div();
+// List.
+echo html_writer::start_div('card-body');
+echo html_writer::tag(
+    'p',
+    '<br><b>Transaction date:</b> ' . userdate($transaction->timeupdated, get_string('strftimedatetimeshort', 'langconfig')) .
+        '<br><b>Status:</b> ' . ucfirst($transaction->paymentstatus) .
+        '<br><b>Name:</b> ' . fullname($user) . '<br><b>Email:</b> ' . $user->email . '<br>
             <b>City:</b> ' . $user->city . '<br><b>Is member?</b> ' . $user->profile_field_ismember .
-            '<br><b>Organization:</b> ' . $organization ,
-            array('class' => 'card-text'),
-        );
-    echo html_writer::end_div();
+        '<br><b>Organization:</b> ' . $organization,
+    array('class' => 'card-text'),
+);
+echo html_writer::end_div();
 echo html_writer::end_div();
 echo html_writer::tag('br', '');
 
