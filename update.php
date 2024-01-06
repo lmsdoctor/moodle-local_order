@@ -24,6 +24,7 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_once(dirname(__FILE__) . '/global.php');
+require("$CFG->libdir/tablelib.php");
 
 require_login();
 
@@ -37,16 +38,13 @@ $action = optional_param('action', '', PARAM_TEXT);
 $urlparams = array('id' => $id, 'action' => $action);
 
 $orderurl = new moodle_url(HOME);
-$pageurl = new moodle_url(UPDATEURL, $urlparams);
-
-// Javascript/jQuery code is found in amd/src/confirm.js.
-$PAGE->requires->js_call_amd(PLUGINAMD, 'init');
+$pageurl = new moodle_url(UPDATEURL, (array)$urlparams);
 
 $strupdateorder = get_string('updateorder', PLUGINNAME);
 
 $context = context_system::instance();
 $PAGE->set_context($context);
-$PAGE->set_url($pageurl);
+$PAGE->set_url($orderurl);
 $PAGE->set_title($strupdateorder);
 $PAGE->set_heading($strupdateorder);
 $PAGE->set_pagelayout('standard');
@@ -56,16 +54,26 @@ $PAGE->navbar->add(get_string('pluginname', PLUGINNAME));
 $PAGE->navbar->add('Order', $orderurl);
 $PAGE->navbar->add($strupdateorder);
 
+$hasaction = in_array($action, array('delete', 'add', 'edit'), true);
+
+if (!$id) {
+    redirect($orderurl);
+}
+
 // Action delete.
 if ($action === 'delete') {
     $DB->delete_records(TABLE_TRAN, array('id' => $id));
     redirect($orderurl, get_string('deleted', PLUGINNAME), 0, notification::NOTIFY_SUCCESS);
 }
 
+$table = new local_order\detail_table('uniqueid');
+// Javascript/jQuery code is found in amd/src/confirm.js.
+$PAGE->requires->js_call_amd('local_order/confirm', 'init', [$pageurl]);
+
 $transaction = $DB->get_record(TABLE_TRAN, array('id' => $id));
 $transaction->action = $action;
 
-$mform = new order_form(null, $transaction);
+$mform = new order_form($pageurl, (array)$transaction);
 
 // Form processing and displaying is done here.
 if ($mform->is_cancelled()) {
@@ -103,7 +111,9 @@ if ($mform->is_cancelled()) {
         $status = get_string('saved', PLUGINNAME);
     }
 
-    redirect($orderurl, $status, 0, notification::NOTIFY_SUCCESS);
+    if ($hasaction) {
+        redirect($orderurl, $status, 0, notification::NOTIFY_SUCCESS);
+    }
 } else {
 
     // Set default data (if any).
@@ -120,5 +130,30 @@ if ($mform->is_cancelled()) {
     echo $OUTPUT->header();
     echo html_writer::div($strupdateorder, 'mb-5 alert alert-primary');
     $mform->display();
-    echo $OUTPUT->footer();
 }
+
+// Work out the sql for the table.
+$table->set_sql(
+    'd.id, d.sessionid, d.courseid, d.amount, d.currency, c.taxpercent',
+    "{" . TABLE_DETAIL . "} d
+    JOIN {" . TABLE_SESSION . "} c ON c.id = d.sessionid",
+    'd.sessionid = ?',
+    array($transaction->instanceid)
+);
+
+
+echo html_writer::tag(
+    'div',
+    html_writer::tag(
+        'div',
+        '<h3 class="display-5">' . get_string('courseslinkedtransaction', PLUGINNAME) . '</h3>' .
+            '<p class="lead">' . get_string('courseslinkedtransaction_info', PLUGINNAME) . '</p>',
+        array('class' => 'container')
+    ),
+    array('class' => 'jumbotron jumbotron-fluid border-radius py-4 mt-5')
+);
+
+$table->define_baseurl($CFG->wwwroot . DETAILURL);
+$table->out(10, true);
+
+echo $OUTPUT->footer();

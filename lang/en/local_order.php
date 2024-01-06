@@ -55,3 +55,5 @@ $string['finaldate'] = 'Final date';
 $string['requiredpermissions'] = 'You do not have the necessary permissions for this view.';
 $string['formreset'] = 'Form cleaned and ready to use';
 $string['noenrollment'] = 'There was no enrollment';
+$string['courseslinkedtransaction'] = 'Courses linked to the transaction';
+$string['courseslinkedtransaction_info'] = '<i><strong>Warning:</strong></i> when updating to any state other than <i><strong>completed</strong></i> the user who owns this transformation will be suspended from the following courses';
