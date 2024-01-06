@@ -22,15 +22,14 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define('PLUGINURL', 'local/order');
-define('PLUGINNAME', 'local_order');
+require_once(__DIR__ . '/../../config.php');
+require_once(dirname(__FILE__) . '/global.php');
 
-define('HOME', '/local/order/index.php');
-define('CANCEL', '/local/order/cancel.php');
-define('DETAILURL', '/local/order/detail.php');
-define('UPDATEURL', '/local/order/update.php');
-define('PLUGINAMD', PLUGINNAME . '/confirm');
+use \core\output\notification;
 
-define('TABLE_TRAN', 'enrol_payment_transaction');
-define('TABLE_DETAIL', 'enrol_payment_detail');
-define('TABLE_SESSION', 'enrol_payment_session');
+redirect(
+    new moodle_url(HOME),
+    get_string('formreset', PLUGINNAME),
+    0,
+    notification::NOTIFY_INFO
+);

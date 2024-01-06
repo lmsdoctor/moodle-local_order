@@ -28,7 +28,7 @@ use moodle_url;
 use pix_icon;
 use html_writer;
 
-require_once(dirname(__FILE__, 3) . '/global.php');
+require_once(dirname(__FILE__, 2) . '/global.php');
 
 /**
  * Overall table class.
@@ -46,14 +46,12 @@ class order_table extends \table_sql {
         // Define the list of columns to show.
         $columns = array(
             'instanceid',
-            // 'userid',
             'email',
-            'ismember',
-            'organization',
-            'timeupdated',
-            'paymentstatus',
-            // 'course',
+            'itemname',
             'memo',
+            'paymenttype',
+            'paymentstatus',
+            'timeupdated',
         );
 
         // Display column if not downloading.
@@ -66,86 +64,18 @@ class order_table extends \table_sql {
         // Define the titles of columns to show in header.
         $headers = array(
             get_string('order', PLUGINNAME),
-            // get_string('user'),
             get_string('email'),
-            get_string('ismember', PLUGINNAME),
-            get_string('organization', PLUGINNAME),
-            get_string('date'),
-            get_string('status', PLUGINNAME),
-            // get_string('course'),
+            get_string('coursename', PLUGINNAME),
             get_string('total', PLUGINNAME),
+            get_string('gateway', PLUGINNAME),
+            get_string('status', PLUGINNAME),
+            get_string('date'),
         );
 
         if (!$this->is_downloading()) {
             $headers[] = get_string('actions', PLUGINNAME);
         }
         $this->define_headers($headers);
-    }
-
-    /**
-     * Returns the user fullname.
-     *
-     * @param stdClass $row Contains object with all the values of record.
-     * @return string
-     */
-    public function col_userid($row) {
-        global $DB;
-
-        $user = $DB->get_record('user', array('id' => $row->userid));
-        return fullname($user);
-    }
-
-    /**
-     * Returns the user fullname.
-     *
-     * @param stdClass $row Contains object with all the values of record.
-     * @return string
-     */
-    public function col_email($row) {
-        global $DB;
-        return $DB->get_field('user', 'email', array('id' => $row->userid));
-    }
-
-    /**
-     * Returns the user fullname.
-     *
-     * @param stdClass $row Contains object with all the values of record.
-     * @return string
-     */
-    public function col_ismember($row) {
-        global $DB;
-        $user = $DB->get_record('user', array('id' => $row->userid));
-        \profile_load_data($user);
-        return $user->profile_field_ismember;
-    }
-
-    /**
-     * Returns the user fullname.
-     *
-     * @param stdClass $row Contains object with all the values of record.
-     * @return string
-     */
-    public function col_organization($row) {
-        global $DB;
-        $user = $DB->get_record('user', array('id' => $row->userid));
-        \profile_load_data($user);
-        return $user->profile_field_organization;
-    }
-
-    /**
-     * Returns the employee number if exist, empty otherwise.
-     *
-     * @param stdClass $row Contains object with all the values of record.
-     * @return string
-     */
-    public function col_courseid($row) {
-        global $DB;
-
-        if (empty($row->courseid)) {
-            return '';
-        }
-
-        return $DB->get_field('course', 'fullname', array('id' => $row->courseid));
     }
 
     /**
@@ -166,6 +96,83 @@ class order_table extends \table_sql {
             );
         }
         return $row->instanceid . ' - ' . fullname($user);
+    }
+
+    /**
+     * Returns the user fullname.
+     *
+     * @param stdClass $row Contains object with all the values of record.
+     * @return string
+     */
+    public function col_email($row) {
+        global $DB;
+
+        $user = $DB->get_record('user', array('id' => $row->userid));
+        return $user->email;
+    }
+
+    /**
+     * Returns the courses name.
+     *
+     * @param stdClass $row Contains object with all the values of record.
+     * @return string
+     */
+    public function col_itemname($row) {
+        global $DB;
+        return $row->itemname;
+    }
+
+
+    /**
+     * Returns the user fullname.
+     *
+     * @param stdClass $row Contains object with all the values of record.
+     * @return string
+     */
+    public function col_userid($row) {
+        global $DB;
+
+        $user = $DB->get_record('user', array('id' => $row->userid));
+        return fullname($user);
+    }
+
+    /**
+     * Returns the user fullname.
+     *
+     * @param stdClass $row Contains object with all the values of record.
+     * @return string
+     */
+    public function col_ismember($row) {
+        global $DB;
+        return '';
+    }
+
+    /**
+     * Returns the user fullname.
+     *
+     * @param stdClass $row Contains object with all the values of record.
+     * @return string
+     */
+    public function col_organization($row) {
+        global $DB;
+
+        return '';
+    }
+
+    /**
+     * Returns the employee number if exist, empty otherwise.
+     *
+     * @param stdClass $row Contains object with all the values of record.
+     * @return string
+     */
+    public function col_courseid($row) {
+        global $DB;
+
+        if (empty($row->courseid)) {
+            return '';
+        }
+
+        return $DB->get_field('course', 'fullname', array('id' => $row->courseid));
     }
 
     /**

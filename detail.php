@@ -24,23 +24,20 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_once(dirname(__FILE__) . '/global.php');
+require("$CFG->libdir/tablelib.php");
 
 require_login();
 
 global $DB;
 
-require("$CFG->libdir/tablelib.php");
-
-use local_order\detail_table;
-
 $context = context_system::instance();
 $PAGE->set_context($context);
-$PAGE->set_url(DETAILURL);
+$PAGE->set_url(new moodle_url(DETAILURL));
 
 $id = required_param('id', PARAM_INT);
 
-$table = new detail_table('uniqueid');
-$table->is_downloading($download, 'Details_' . time(), 'details');
+$table = new local_order\detail_table('uniqueid');
+$table->is_downloading(null, 'Details_' . time(), 'details');
 
 if (!$table->is_downloading()) {
     // Only print headers if not asked to download data
@@ -53,15 +50,20 @@ if (!$table->is_downloading()) {
 }
 
 // Work out the sql for the table.
-$table->set_sql('id,sessionid,courseid,amount', "{" . TABLE_DETAIL . "}", 'sessionid = ?', array($id));
+$table->set_sql(
+    'd.id, d.sessionid, d.courseid, d.amount, d.currency, c.taxpercent',
+    "{" . TABLE_DETAIL . "} d
+    JOIN {" . TABLE_SESSION . "} c ON c.id = d.sessionid",
+    'd.sessionid = ?',
+    array($id)
+);
 
 $table->define_baseurl($CFG->wwwroot . DETAILURL);
 
 // Get the user records to display it.
+$session = $DB->get_record(TABLE_SESSION, array('id' => $id));
 $transaction = $DB->get_record(TABLE_TRAN, array('instanceid' => $id));
 $user = $DB->get_record('user', array('id' => $transaction->userid));
-profile_load_data($user);
-$organization = ($user->profile_field_organization == 'My organization is not here') ? 'None' : $user->profile_field_organization;
 
 // Open card.
 echo html_writer::start_div('card');
@@ -71,14 +73,16 @@ echo html_writer::end_div();
 // List.
 echo html_writer::start_div('card-body');
 echo html_writer::tag(
-    'p',
-    '<br><b>Transaction date:</b> ' . userdate($transaction->timeupdated, get_string('strftimedatetimeshort', 'langconfig')) .
-        '<br><b>Status:</b> ' . ucfirst($transaction->paymentstatus) .
-        '<br><b>Name:</b> ' . fullname($user) . '<br><b>Email:</b> ' . $user->email . '<br>
-            <b>City:</b> ' . $user->city . '<br><b>Is member?</b> ' . $user->profile_field_ismember .
-        '<br><b>Organization:</b> ' . $organization,
-    array('class' => 'card-text'),
+    'ul',
+    '<li class="list-group-item"><b>Transaction date:</b> ' . userdate($transaction->timeupdated, get_string('strftimedatetimeshort', 'langconfig')) . '</li>' .
+        '<li class="list-group-item"><b>Status:</b> ' . ucfirst($transaction->paymentstatus) . '</li>' .
+        '<li class="list-group-item"><b>Names:</b> ' . fullname($user) . '</li>' .
+        '<li class="list-group-item"><b>Email:</b> ' . $user->email . '</li>' .
+        '<li class="list-group-item"><b>City:</b> ' . $user->city . '</li>' .
+        '<li class="list-group-item"><b>Total:</b> $' . $transaction->memo . '</li>',
+    array('class' => 'list-group list-group-flush'),
 );
+
 echo html_writer::end_div();
 echo html_writer::end_div();
 echo html_writer::tag('br', '');

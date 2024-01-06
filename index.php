@@ -24,36 +24,115 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_once(dirname(__FILE__) . '/global.php');
+require("$CFG->libdir/tablelib.php");
 
 require_login();
 
-require("$CFG->libdir/tablelib.php");
+global $SESSION, $USER, $DB;
 
 use local_order\order_table;
+use \local_order\form\order_filter_form;
+use \core\output\notification;
 
 $context = context_system::instance();
-$PAGE->set_context($context);
-$PAGE->set_url(HOME);
-$PAGE->requires->js_call_amd('local_order/confirm', 'init');
+
+if (!is_siteadmin($USER->id)) {
+    redirect(
+        new moodle_url('/my'),
+        get_string('requiredpermissions', PLUGINNAME),
+        0,
+        notification::NOTIFY_WARNING
+    );
+}
 
 $download = optional_param('download', '', PARAM_ALPHA);
+$forminitdata = new stdClass();
+$forminitdata->paymentstatus = optional_param('paymentstatus', '', PARAM_TEXT);
+$forminitdata->itemname = optional_param('itemname', '', PARAM_TEXT);
+$forminitdata->startdate = optional_param('startdate', 0, PARAM_INT);
+$forminitdata->finaldate = optional_param('finaldate', 0, PARAM_INT);
+
+$orderurl = new moodle_url(HOME);
+$PAGE->set_context($context);
+$PAGE->set_url($orderurl);
 
 $table = new order_table('uniqueid');
 $table->is_downloading($download, 'Orders_' . time(), 'orders');
 
+$PAGE->requires->css('/' . PLUGINNAME . '/styles/main.css');
+
+// If the table is not downloading.
 if (!$table->is_downloading()) {
-    // Only print headers if not asked to download data.
-    // Print the page header.
+
+    // Search Filter Form Instance.
+    $mform = new order_filter_form(null, (array)$forminitdata);
+
+    // Define heading and title.
     $PAGE->set_title(get_string('orders', PLUGINNAME));
     $PAGE->set_heading(get_string('orders', PLUGINNAME));
-    $PAGE->navbar->add(get_string('orders', PLUGINNAME), new moodle_url('/index.php'));
+    $PAGE->navbar->add(get_string('orders', PLUGINNAME), $orderurl);
+
     echo $OUTPUT->header();
+
+    // Form processing and displaying is done here.
+    if ($mform->is_cancelled()) {
+        redirect(new moodle_url(CANCEL));
+    } else if ($getdata = $mform->get_data()) {
+        $mform->set_data($getdata);
+    }
+    $mform->display();
 }
 
 // Work out the sql for the table.
-$table->set_sql('id,instanceid,userid,memo,paymentstatus,timeupdated', "{enrol_payment_transaction}", '1=1');
-$table->define_baseurl($CFG->wwwroot . HOME);
+$sql = new stdClass();
+$sql->fields = "id, instanceid, itemname, userid, memo, paymenttype, paymentstatus, timeupdated";
+$sql->from = "{" . TABLE_TRAN . "}";
+$sql->where = "1=1";
+$sql->params = (array)$forminitdata;
+
+if (!empty($forminitdata->paymentstatus)) {
+    $sql->where = $sql->where . ' AND paymentstatus = :paymentstatus';
+}
+
+if (!empty($forminitdata->itemname)) {
+    $likname = $DB->sql_like('itemname', ':itemname');
+    $sql->where = $sql->where . " AND $likname COLLATE utf8mb4_general_ci";
+    $sql->params['itemname'] = '%' . $DB->sql_like_escape($forminitdata->itemname) . '%';
+}
+
+$symbol = '-';
+if (!empty($forminitdata->startdate)) {
+    $startdate = array(
+        $forminitdata->startdate['year'],
+        str_pad($forminitdata->startdate['month'], 2, '0', STR_PAD_LEFT),
+        str_pad($forminitdata->startdate['day'], 2, '0', STR_PAD_LEFT),
+    );
+    $sql->params['startdate'] = implode($symbol, $startdate);
+
+    if (!empty($forminitdata->finaldate)) {
+        $finaldate = array(
+            $forminitdata->finaldate['year'],
+            str_pad($forminitdata->finaldate['month'], 2, '0', STR_PAD_LEFT),
+            str_pad($forminitdata->finaldate['day'], 2, '0', STR_PAD_LEFT),
+        );
+
+        $sql->params['finaldate'] = implode($symbol, $finaldate);
+        $sql->where = $sql->where . ' AND DATE(FROM_UNIXTIME(timeupdated)) BETWEEN :startdate AND :finaldate ';
+    } else {
+        $sql->where = $sql->where . ' AND DATE(FROM_UNIXTIME(timeupdated)) = :startdate';
+    }
+}
+
+// Work out the sql for the table.
+$table->set_sql(
+    $sql->fields,
+    $sql->from,
+    $sql->where,
+    $sql->params
+);
+$table->define_baseurl($orderurl);
 $table->out(40, true);
+$table->finish_output();
 
 if (!$table->is_downloading()) {
     echo $OUTPUT->footer();

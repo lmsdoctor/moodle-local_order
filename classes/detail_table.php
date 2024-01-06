@@ -31,7 +31,7 @@ use html_writer;
 global $CFG;
 
 require_once($CFG->dirroot . '/lib/enrollib.php');
-require_once(dirname(__FILE__, 3) . '/global.php');
+require_once(dirname(__FILE__, 2) . '/global.php');
 
 /**
  * Overall table class.
@@ -49,7 +49,9 @@ class detail_table extends \table_sql {
         // Define the list of columns to show.
         $columns = array(
             'courseid',
+            'taxpercent',
             'amount',
+            'sessionid',
             'enrollmentdate',
         );
 
@@ -58,7 +60,9 @@ class detail_table extends \table_sql {
         // Define the titles of columns to show in header.
         $headers = array(
             get_string('course'),
+            get_string('tax', PLUGINNAME),
             get_string('amount', PLUGINNAME),
+            get_string('subtotal', PLUGINNAME),
             get_string('enrollmentdate', PLUGINNAME),
         );
         $this->define_headers($headers);
@@ -89,16 +93,33 @@ class detail_table extends \table_sql {
     public function col_enrollmentdate($row) {
         global $DB;
 
-        // Get the transaction first.
-        $transaction = $DB->get_record(TABLE_TRAN, array('instanceid' => $row->sessionid));
+        $params = array(
+            'instanceid' => $row->sessionid,
+            'enrol' => 'payment',
+            'courseid' => $row->courseid,
+            'status' => 0
+        );
 
-        $params = array('enrol' => 'payment', 'courseid' => $row->courseid, 'status' => 0);
-        $enrol = $DB->get_record('enrol', $params);
+        $sql = "SELECT ue.*
+                FROM {" . TABLE_TRAN . "} t
+                JOIN {enrol} e ON e.status = :status
+                 AND e.courseid = :courseid
+                 AND e.enrol = :enrol
+                JOIN {user_enrolments} ue
+                  ON ue.enrolid = e.id
+                 AND ue.userid = t.userid
+               WHERE t.instanceid = :instanceid";
+        $userenrollment = $DB->get_record_sql($sql, $params, IGNORE_MISSING);;
 
-        $enrolparams = array('enrolid' => $enrol->id, 'userid' => $transaction->userid);
-        $userenrollment = $DB->get_record('user_enrolments', $enrolparams);
         if (empty($userenrollment)) {
-            return '';
+            if (!$this->is_downloading()) {
+                return html_writer::tag(
+                    'span',
+                    get_string('noenrollment', PLUGINNAME),
+                    array('class' => 'badge badge-warning')
+                );
+            }
+            return get_string('noenrollment', PLUGINNAME);
         }
         return userdate($userenrollment->timecreated, get_string('strftimedatetimeshort', 'langconfig'));
     }
@@ -115,6 +136,39 @@ class detail_table extends \table_sql {
         if (empty($row->amount)) {
             return '0.00';
         }
-        return '$' . $row->amount;
+        return "$$row->amount $row->currency";
+    }
+
+    /**
+     * Returns the amount.
+     *
+     * @param  stdClass $row
+     * @return string
+     */
+    public function col_taxpercent($row) {
+        global $DB;
+
+        if (empty($row->taxpercent)) {
+            return '0.00';
+        }
+        $tax = $row->taxpercent * $row->amount;
+        return "$$tax $row->currency";
+    }
+
+    /**
+     * Returns the amount.
+     *
+     * @param  stdClass $row
+     * @return string
+     */
+    public function col_sessionid($row) {
+        global $DB;
+
+        if (empty($row->taxpercent)) {
+            return '0.00';
+        }
+        $tax = $row->taxpercent * $row->amount;
+        $subtotal = $tax + $row->amount;
+        return "$$subtotal $row->currency";
     }
 }
