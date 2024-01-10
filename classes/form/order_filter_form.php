@@ -43,7 +43,7 @@ class order_filter_form extends moodleform {
         $mform = $this->_form;
 
         $status = array(
-            '' => 'Status',
+            '' => get_string('status', PLUGINNAME),
             'pending' => 'Pending payment',
             'on-hold' => 'On hold',
             'completed' => 'Completed',
@@ -52,6 +52,7 @@ class order_filter_form extends moodleform {
             'failed' => 'Failed',
         );
         $mform->addElement('select', 'paymentstatus', get_string('status', PLUGINNAME), $status);
+        $mform->setDefault('paymentstatus', '');
 
         $mform->addElement('text', 'itemname', get_string('coursename', PLUGINNAME));
         $mform->setType('itemname', PARAM_TEXT);

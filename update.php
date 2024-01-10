@@ -96,8 +96,20 @@ if ($mform->is_cancelled()) {
             foreach ($details as $detail) {
                 // Enrol user.
                 $params = array('enrol' => 'payment', 'courseid' => $detail->courseid, 'status' => 0);
-                $plugininstance = $DB->get_record('enrol', $params);
-                $plugin->unenrol_user($plugininstance, $detail->userid);
+                $enrol = $DB->get_record('enrol', $params);
+
+                $plugin->unenrol_user($enrol, $detail->userid);
+                $enrolplugin = enrol_get_plugin($enrol->enrol);
+
+                // Set the enrollment period.
+                $timestart = 0;
+                $timeend   = 0;
+                if ($enrol->enrolperiod) {
+                    $timestart = time();
+                    $timeend   = $timestart + $enrol->enrolperiod;
+                }
+
+                $enrolplugin->enrol_user($enrol, $transaction->userid, $enrol->roleid, $timestart, $timeend, 1);
             }
         }
 
