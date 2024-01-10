@@ -49,6 +49,7 @@ class order_form extends moodleform {
         $mform->setType('action', PARAM_TEXT);
 
         $status = array(
+            '' => get_string('status', PLUGINNAME),
             'pending' => 'Pending payment',
             'on-hold' => 'On hold',
             'completed' => 'Completed',
@@ -57,6 +58,7 @@ class order_form extends moodleform {
             'failed' => 'Failed',
         );
         $mform->addElement('select', 'paymentstatus', get_string('status', PLUGINNAME), $status);
+        $mform->setDefault('paymentstatus', '');
 
         $this->add_action_buttons(true, get_string('save'));
     }
