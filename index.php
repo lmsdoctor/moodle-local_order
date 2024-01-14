@@ -95,8 +95,7 @@ if (!empty($forminitdata->paymentstatus)) {
 }
 
 if (!empty($forminitdata->itemname)) {
-    $likname = $DB->sql_like('itemname', ':itemname');
-    $sql->where = $sql->where . " AND $likname COLLATE utf8mb4_general_ci";
+    $sql->where = $sql->where . " AND itemname LIKE :itemname";
     $sql->params['itemname'] = '%' . $DB->sql_like_escape($forminitdata->itemname) . '%';
 }
 
