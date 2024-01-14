@@ -12,8 +12,9 @@ define(modules, function ($, ModalFactory, ModalEvents) {
       finaldatecontent.addClass("d-none");
       $("input#id_startdate_enabled").change(function (e) {
         finaldatecontent.toggleClass("d-none");
+        const checked = $(e).is(":checked");
         $("input#id_finaldate_enabled")
-          .prop("disabled", !$(e).is(":checked"))
+          .attr("disabled", checked)
           .prop("checked", false);
       });
 
