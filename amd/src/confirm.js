@@ -7,7 +7,16 @@
 const modules = ["jquery", "core/modal_factory", "core/modal_events"];
 define(modules, function ($, ModalFactory, ModalEvents) {
   return {
-    init: function (url) {
+    init: function () {
+      const finaldatecontent = $("#fitem_id_finaldate");
+      finaldatecontent.addClass("d-none");
+      $("input#id_startdate_enabled").change(function (e) {
+        finaldatecontent.toggleClass("d-none");
+        $("input#id_finaldate_enabled")
+          .prop("disabled", !$(e).is(":checked"))
+          .prop("checked", false);
+      });
+
       $("a.action-delete").on("click", function (e) {
         e.preventDefault();
         var href = $(this).attr("href");
@@ -29,6 +38,10 @@ define(modules, function ($, ModalFactory, ModalEvents) {
 
       $("#id_submitbutton").on("click", function (e) {
         e.preventDefault();
+        // Do not display leaving warning in the browser.
+        window.onbeforeunload = function () {
+          return undefined;
+        };
 
         var trigger = $(".create-modal");
         ModalFactory.create(
@@ -40,12 +53,12 @@ define(modules, function ($, ModalFactory, ModalEvents) {
           trigger
         ).done(function (modal) {
           modal.getRoot().on(ModalEvents.save, function () {
-            // Submit the form.
-            $("form").submit();
             // Do not display leaving warning in the browser.
             window.onbeforeunload = function () {
               return undefined;
             };
+            // Submit the form.
+            $("form").submit();
           });
           modal.show();
         });

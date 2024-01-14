@@ -24,7 +24,6 @@
 
 require_once(dirname(__FILE__, 4) . '/config.php');
 require_once(dirname(__FILE__, 2) . '/global.php');
-require("$CFG->libdir/tablelib.php");
 
 require_login();
 

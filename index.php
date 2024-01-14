@@ -60,6 +60,7 @@ $table = new order_table('uniqueid');
 $table->is_downloading($download, 'Orders_' . time(), 'orders');
 
 $PAGE->requires->css('/' . PLUGINURL . '/styles/main.css');
+$PAGE->requires->js_call_amd('local_order/confirm', 'init');
 
 // If the table is not downloading.
 if (!$table->is_downloading()) {
