@@ -36,7 +36,7 @@ if (!is_siteadmin($USER->id)) {
         new moodle_url('/my'),
         get_string('requiredpermissions', PLUGINNAME),
         0,
-        \core\output\notification::NOTIFY_WARNING
+        notification::NOTIFY_WARNING
     );
 }
 
@@ -47,7 +47,7 @@ $action = optional_param('action', '', PARAM_TEXT);
 $urlparams = array('id' => $id, 'action' => $action);
 
 $orderurl = new moodle_url(HOME);
-$pageurl = new moodle_url(UPDATEURL, (array)$urlparams);
+$updateurl = new moodle_url(UPDATEURL, (array)$urlparams);
 
 $strupdateorder = get_string('updateorder', PLUGINNAME);
 
@@ -77,66 +77,18 @@ if ($action === 'delete') {
 
 $table = new local_order\detail_table('uniqueid');
 // Javascript/jQuery code is found in amd/src/confirm.js.
-$PAGE->requires->js_call_amd('local_order/confirm', 'init', [$pageurl]);
+$PAGE->requires->js_call_amd('local_order/confirm', 'init');
 
 $transaction = $DB->get_record(TABLE_TRAN, array('id' => $id));
 $transaction->action = $action;
 
 $user = $DB->get_record('user', array('id' => $transaction->userid));
 $user->fullname = fullname($user);
-$mform = new order_form($pageurl);
+$mform = new order_form($updateurl);
 
 // Form processing and displaying is done here.
 if ($mform->is_cancelled()) {
     redirect($orderurl);
-} else if ($formdata = $mform->get_data()) {
-
-    // Those are for single transactions.
-    if ($formdata->action === 'edit') {
-
-        // Unenroll the student for each course if the status is not completed.
-        if ($formdata->paymentstatus != 'completed') {
-            $sql = 'SELECT d.id, d.courseid, t.userid
-                      FROM {' . TABLE_DETAIL . '} d
-                      JOIN {' . TABLE_TRAN . '} t ON t.instanceid = d.sessionid
-                     WHERE t.id = :id';
-            $details = $DB->get_records_sql($sql, array('id' => $formdata->id));
-            // Get the enrollment plugin.
-            $plugin = enrol_get_plugin('payment');
-
-            foreach ($details as $detail) {
-                // Enrol user.
-                $params = array('enrol' => 'payment', 'courseid' => $detail->courseid, 'status' => 0);
-                $enrol = $DB->get_record('enrol', $params);
-
-                $plugin->unenrol_user($enrol, $detail->userid);
-                $enrolplugin = enrol_get_plugin($enrol->enrol);
-
-                // Set the enrollment period.
-                $timestart = 0;
-                $timeend   = 0;
-                if ($enrol->enrolperiod) {
-                    $timestart = time();
-                    $timeend   = $timestart + $enrol->enrolperiod;
-                }
-
-                $enrolplugin->enrol_user($enrol, $transaction->userid, $enrol->roleid, $timestart, $timeend, 1);
-            }
-        }
-
-        $DB->update_record(TABLE_TRAN, $formdata);
-        $status = get_string('updated', PLUGINNAME);
-        $id = $formdata->id;
-    }
-
-    if ($formdata->action === 'add') {
-        $id = $DB->insert_record(TABLE_TRAN, $formdata, true, true);
-        $status = get_string('saved', PLUGINNAME);
-    }
-
-    if ($hasaction) {
-        redirect($orderurl, $status, 0, notification::NOTIFY_SUCCESS);
-    }
 } else {
 
     // Set default data (if any).

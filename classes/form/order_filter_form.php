@@ -43,13 +43,13 @@ class order_filter_form extends moodleform {
         $mform = $this->_form;
 
         $status = array(
-            '' => get_string('status', PLUGINNAME),
-            'pending' => 'Pending payment',
-            'on-hold' => 'On hold',
-            'completed' => 'Completed',
-            'cancelled' => 'Cancelled',
-            'refunded' => 'Refunded',
-            'failed' => 'Failed',
+            '' => get_string('allstates', PLUGINNAME),
+            'pending' => get_string('pending', PLUGINNAME),
+            'on-hold' => get_string('on-hold', PLUGINNAME),
+            'completed' => get_string('completed', PLUGINNAME),
+            'cancelled' => get_string('cancelled', PLUGINNAME),
+            'refunded' => get_string('refunded', PLUGINNAME),
+            'failed' => get_string('failed', PLUGINNAME),
         );
         $mform->addElement('select', 'paymentstatus', get_string('status', PLUGINNAME), $status);
         $mform->setDefault('paymentstatus', '');

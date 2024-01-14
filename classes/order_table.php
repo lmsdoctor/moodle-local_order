@@ -240,27 +240,31 @@ class order_table extends \table_sql {
 
         if (!$this->is_downloading()) {
 
-            // Remove the path of the url.
+            // Detail the path of the url.
             $viewdetail = new moodle_url(DETAILURL, array('id' => $row->instanceid));
             $actions = $OUTPUT->action_icon(
                 $viewdetail,
                 new pix_icon('i/search', get_string('orderdetail', PLUGINNAME))
             );
 
-            // Remove the path of the url.
+            // Uodate the path of the url.
             $updateurl = new moodle_url(
-                UPDATEURL,
+                EDITURL,
                 array('id' => $row->id, 'action' => 'edit')
             );
-            $actions .= $OUTPUT->action_icon($updateurl, new pix_icon('i/edit', 'edit'));
+            $actions .= $OUTPUT->action_icon(
+                $updateurl,
+                new pix_icon('i/edit', get_string('orderedit', PLUGINNAME))
+            );
 
+            // Remove the path of the url.
             $deleteurl = new moodle_url(
-                UPDATEURL,
-                array('id' => $row->id, 'action' => 'delete', 'class' => 'action-delete')
+                DELETEURL,
+                array('id' => $row->id, 'action' => 'delete')
             );
             $actions .= $OUTPUT->action_icon(
                 $deleteurl,
-                new pix_icon('i/trash', 'trash'),
+                new pix_icon('i/trash', get_string('orderdelete', PLUGINNAME)),
                 null,
                 array('class' => 'action-delete text-danger')
             );

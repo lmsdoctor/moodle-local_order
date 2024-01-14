@@ -49,7 +49,6 @@ class order_form extends moodleform {
         $mform->setType('action', PARAM_TEXT);
 
         $status = array(
-            '' => get_string('allstates', PLUGINNAME),
             'pending' => get_string('pending', PLUGINNAME),
             'on-hold' => get_string('on-hold', PLUGINNAME),
             'completed' => get_string('completed', PLUGINNAME),

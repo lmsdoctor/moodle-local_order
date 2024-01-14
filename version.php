@@ -24,6 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2024011400;
+$plugin->version = 2024011401;
 $plugin->requires = 2018051200;
 $plugin->component = "local_order";

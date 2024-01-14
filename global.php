@@ -28,7 +28,10 @@ define('PLUGINNAME', 'local_order');
 define('HOME', '/local/order/index.php');
 define('CANCEL', '/local/order/cancel.php');
 define('DETAILURL', '/local/order/detail.php');
-define('UPDATEURL', '/local/order/update.php');
+define('EDITURL', '/local/order/edit.php');
+define('UPDATEURL', '/local/order/action/update.php');
+define('DELETEURL', '/local/order/action/delete.php');
+
 define('PLUGINAMD', PLUGINNAME . '/confirm');
 
 define('TABLE_TRAN', 'enrol_payment_transaction');
