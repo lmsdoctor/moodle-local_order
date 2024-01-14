@@ -31,6 +31,15 @@ require_login();
 use \core\output\notification;
 use \local_order\form\order_form;
 
+if (!is_siteadmin($USER->id)) {
+    redirect(
+        new moodle_url('/my'),
+        get_string('requiredpermissions', PLUGINNAME),
+        0,
+        \core\output\notification::NOTIFY_WARNING
+    );
+}
+
 global $PAGE, $DB, $USER;
 
 $id = optional_param('id', 0, PARAM_INT);
@@ -73,7 +82,9 @@ $PAGE->requires->js_call_amd('local_order/confirm', 'init', [$pageurl]);
 $transaction = $DB->get_record(TABLE_TRAN, array('id' => $id));
 $transaction->action = $action;
 
-$mform = new order_form($pageurl, (array)$transaction);
+$user = $DB->get_record('user', array('id' => $transaction->userid));
+$user->fullname = fullname($user);
+$mform = new order_form($pageurl);
 
 // Form processing and displaying is done here.
 if ($mform->is_cancelled()) {
@@ -156,13 +167,10 @@ $table->set_sql(
 
 echo html_writer::tag(
     'div',
-    html_writer::tag(
-        'div',
-        '<h3 class="display-5">' . get_string('courseslinkedtransaction', PLUGINNAME) . '</h3>' .
-            '<p class="lead">' . get_string('courseslinkedtransaction_info', PLUGINNAME) . '</p>',
-        array('class' => 'container')
-    ),
-    array('class' => 'jumbotron jumbotron-fluid border-radius py-4 mt-5')
+    html_writer::tag('h3', get_string('courseslinkedtransaction', PLUGINNAME), array('class' => 'alert-heading')) .
+        html_writer::tag('hr', '', array()) .
+        html_writer::tag('p', get_string('courseslinkedtransaction_info', PLUGINNAME, $user), array('class' => 'container')),
+    array('class' => 'alert alert-warning border-radius py-4 mt-5')
 );
 
 $table->define_baseurl($CFG->wwwroot . DETAILURL);

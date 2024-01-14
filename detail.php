@@ -28,6 +28,15 @@ require("$CFG->libdir/tablelib.php");
 
 require_login();
 
+if (!is_siteadmin($USER->id)) {
+    redirect(
+        new moodle_url('/my'),
+        get_string('requiredpermissions', PLUGINNAME),
+        0,
+        \core\output\notification::NOTIFY_WARNING
+    );
+}
+
 global $DB;
 
 $context = context_system::instance();
