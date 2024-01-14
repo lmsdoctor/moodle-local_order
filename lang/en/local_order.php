@@ -22,37 +22,40 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['actions'] = 'Actions';
-$string['amount'] = 'Amount';
+$string['open'] = 'Open';
+$string['failed'] = 'Failed';
+$string['on-hold'] = 'On hold';
 $string['cancelled'] = 'Cancelled';
 $string['completed'] = 'Completed';
-$string['open'] = 'Open';
+$string['pending'] = 'Pending payment';
+$string['refunded'] = 'Refunded';
+
+$string['saved'] = 'Saved';
+$string['amount'] = 'Amount';
+$string['search'] = 'Search';
+$string['actions'] = 'Actions';
 $string['deleted'] = 'Deleted';
-$string['failed'] = 'Failed';
 $string['ismember'] = 'Is member';
 $string['enrollmentdate'] = 'Enrollment date';
-$string['on-hold'] = 'On hold';
+$string['pluginname'] = 'Orders';
 $string['orders'] = 'Orders';
 $string['order'] = 'Order #';
+$string['updateorder'] = 'Update order';
 $string['organization'] = 'Organization';
-$string['pending'] = 'Pending payment';
-$string['pluginname'] = 'Orders';
 $string['pluginname_desc'] = 'Add and update users order';
-$string['refunded'] = 'Refunded';
-$string['search'] = 'Search';
-$string['saved'] = 'Saved';
 $string['tax'] = 'Tax';
 $string['subtotal'] = 'SubTotal';
 $string['total'] = 'Total';
 $string['updated'] = 'Updated';
-$string['updateorder'] = 'Update order';
 
-$string['orderdetail'] = 'See order details';
 $string['status'] = 'Status';
+$string['allstates'] = 'All the states';
+$string['orderdetail'] = 'See order details';
 $string['gateway'] = 'Payment gateway';
 $string['coursename'] = 'Course name';
 $string['startdate'] = 'Start date';
 $string['finaldate'] = 'Final date';
+
 $string['requiredpermissions'] = 'You do not have the necessary permissions for this view.';
 $string['formreset'] = 'Form cleaned and ready to use';
 $string['noenrollment'] = 'There was no enrollment';
