@@ -47,6 +47,7 @@ $string['total'] = 'Total';
 $string['updated'] = 'Updated';
 $string['updateorder'] = 'Update order';
 
+$string['orderdetail'] = 'See order details';
 $string['status'] = 'Status';
 $string['gateway'] = 'Payment gateway';
 $string['coursename'] = 'Course name';
