@@ -66,7 +66,7 @@ $PAGE->requires->js_call_amd('local_order/confirm', 'init');
 if (!$table->is_downloading()) {
 
     // Search Filter Form Instance.
-    $mform = new order_filter_form(null, (array)$forminitdata);
+    $mform = new order_filter_form(null, (array)$forminitdata, 'post', '', array('name' => 'filter'));
 
     // Define heading and title.
     $PAGE->set_title(get_string('orders', PLUGINNAME));

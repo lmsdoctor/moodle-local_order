@@ -10,6 +10,7 @@ define(modules, function ($, ModalFactory, ModalEvents) {
     init: function () {
       const finaldatecontent = $("#fitem_id_finaldate");
       finaldatecontent.addClass("d-none");
+
       $("input#id_startdate_enabled").change(function (e) {
         finaldatecontent.toggleClass("d-none");
         const checked = $(e).is(":checked");
@@ -37,7 +38,7 @@ define(modules, function ($, ModalFactory, ModalEvents) {
         });
       });
 
-      $("#id_submitbutton").on("click", function (e) {
+      $("form[name='updatestatus'] #id_submitbutton").on("click", function (e) {
         e.preventDefault();
         // Do not display leaving warning in the browser.
         window.onbeforeunload = function () {

@@ -84,7 +84,7 @@ $transaction->action = $action;
 
 $user = $DB->get_record('user', array('id' => $transaction->userid));
 $user->fullname = fullname($user);
-$mform = new order_form($updateurl);
+$mform = new order_form($updateurl, null, 'post', '', array('name' => 'updatestatus'));
 
 // Form processing and displaying is done here.
 if ($mform->is_cancelled()) {
