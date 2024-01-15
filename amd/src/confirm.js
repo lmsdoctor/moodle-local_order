@@ -8,6 +8,12 @@ const modules = ["jquery", "core/modal_factory", "core/modal_events"];
 define(modules, function ($, ModalFactory, ModalEvents) {
   return {
     init: function () {
+
+      // Prevent the leave site? popup.
+      window.addEventListener('beforeunload', function (event) {
+        event.stopImmediatePropagation();
+      });
+
       const finaldatecontent = $("#fitem_id_finaldate");
       finaldatecontent.addClass("d-none");
 
@@ -40,10 +46,6 @@ define(modules, function ($, ModalFactory, ModalEvents) {
 
       $("form[name='updatestatus'] #id_submitbutton").on("click", function (e) {
         e.preventDefault();
-        // Do not display leaving warning in the browser.
-        window.onbeforeunload = function () {
-          return undefined;
-        };
 
         var trigger = $(".create-modal");
         ModalFactory.create(
@@ -55,10 +57,6 @@ define(modules, function ($, ModalFactory, ModalEvents) {
           trigger
         ).done(function (modal) {
           modal.getRoot().on(ModalEvents.save, function () {
-            // Do not display leaving warning in the browser.
-            window.onbeforeunload = function () {
-              return undefined;
-            };
             // Submit the form.
             $("form").submit();
           });
