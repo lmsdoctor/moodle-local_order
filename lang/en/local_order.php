@@ -22,44 +22,41 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['open'] = 'Open';
-$string['failed'] = 'Failed';
-$string['on-hold'] = 'On hold';
+$string['actions'] = 'Actions';
+$string['allstates'] = 'All';
+$string['amount'] = 'Amount';
 $string['cancelled'] = 'Cancelled';
 $string['completed'] = 'Completed';
-$string['pending'] = 'Pending payment';
-$string['refunded'] = 'Refunded';
-
-$string['saved'] = 'Saved';
-$string['amount'] = 'Amount';
-$string['search'] = 'Search';
-$string['actions'] = 'Actions';
-$string['deleted'] = 'Deleted';
-$string['ismember'] = 'Is member';
-$string['enrollmentdate'] = 'Enrollment date';
-$string['pluginname'] = 'Orders';
-$string['orders'] = 'Orders';
-$string['order'] = 'Order #';
-$string['updateorder'] = 'Update order';
-$string['organization'] = 'Organization';
-$string['pluginname_desc'] = 'Add and update users order';
-$string['tax'] = 'Tax';
-$string['subtotal'] = 'SubTotal';
-$string['total'] = 'Total';
-$string['updated'] = 'Updated';
-
-$string['status'] = 'Status';
-$string['allstates'] = 'All the states';
-$string['orderdetail'] = 'See order details';
-$string['orderedit'] = 'Edit order status';
-$string['orderdelete'] = 'Delete order';
-$string['gateway'] = 'Payment gateway';
 $string['coursename'] = 'Course name';
-$string['startdate'] = 'Start date';
-$string['finaldate'] = 'Final date';
-
-$string['requiredpermissions'] = 'You do not have the necessary permissions for this view.';
-$string['formreset'] = 'Form cleaned and ready to use';
-$string['noenrollment'] = 'There was no enrollment';
 $string['courseslinkedtransaction'] = 'Courses linked to the transaction';
 $string['courseslinkedtransaction_info'] = '<i><strong>Warning:</strong></i> If the transaction is updated to any state other than <strong>completed</strong>, the user (<strong>{$a->fullname}</strong>, with the email address <strong>{$a->email}</strong>) will be suspended from the following courses.';
+$string['deleted'] = 'Deleted';
+$string['enrollmentdate'] = 'Enrollment date';
+$string['failed'] = 'Failed';
+$string['finaldate'] = 'Final date';
+$string['formreset'] = 'Form cleaned and ready to use';
+$string['gateway'] = 'Payment gateway';
+$string['ismember'] = 'Is member';
+$string['noenrollment'] = 'There was no enrollment';
+$string['on-hold'] = 'On hold';
+$string['open'] = 'Open';
+$string['order'] = 'Order #';
+$string['orderdelete'] = 'Delete order';
+$string['orderdetail'] = 'See order details';
+$string['orderedit'] = 'Edit order status';
+$string['orders'] = 'Orders';
+$string['organization'] = 'Organization';
+$string['pending'] = 'Pending payment';
+$string['pluginname'] = 'Orders';
+$string['pluginname_desc'] = 'Add and update users order';
+$string['refunded'] = 'Refunded';
+$string['requiredpermissions'] = 'You do not have the necessary permissions for this view.';
+$string['saved'] = 'Saved';
+$string['search'] = 'Search';
+$string['startdate'] = 'Start date';
+$string['status'] = 'Status';
+$string['subtotal'] = 'SubTotal';
+$string['tax'] = 'Tax';
+$string['total'] = 'Total';
+$string['updated'] = 'Updated';
+$string['updateorder'] = 'Update order';
