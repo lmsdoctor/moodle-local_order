@@ -268,7 +268,7 @@ class order_table extends \table_sql {
                 null,
                 array('class' => 'action-delete text-danger')
             );
+            return $actions;
         }
-        return $actions;
     }
 }

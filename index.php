@@ -73,14 +73,15 @@ if (!$table->is_downloading()) {
     $PAGE->set_heading(get_string('orders', PLUGINNAME));
     $PAGE->navbar->add(get_string('orders', PLUGINNAME), $orderurl);
 
-    echo $OUTPUT->header();
-
-    // Form processing and displaying is done here.
     if ($mform->is_cancelled()) {
         redirect(new moodle_url(CANCEL));
     } else if ($getdata = $mform->get_data()) {
         $mform->set_data($getdata);
     }
+
+    echo $OUTPUT->header();
+
+    // Form processing and displaying is done here.
     $mform->display();
 }
 
@@ -132,7 +133,6 @@ $table->set_sql(
 );
 $table->define_baseurl($orderurl);
 $table->out(40, true);
-$table->finish_output();
 
 if (!$table->is_downloading()) {
     echo $OUTPUT->footer();
