@@ -58,11 +58,11 @@ class order_filter_form extends moodleform {
         $mform->setType('itemname', PARAM_TEXT);
 
         $options = array('optional' => true);
-        $mform->addElement('date_time_selector', 'startdate', get_string('startdate', PLUGINNAME), $options);
+        $mform->addElement('date_selector', 'startdate', get_string('startdate', PLUGINNAME), $options);
         $mform->setDefault('startdate', 0);
 
         $options = array('optional' => true);
-        $mform->addElement('date_time_selector', 'finaldate', get_string('finaldate', PLUGINNAME), $options);
+        $mform->addElement('date_selector', 'finaldate', get_string('finaldate', PLUGINNAME), $options);
         $mform->setDefault('finaldate', 0);
 
         $this->add_action_buttons(true, get_string('search'));

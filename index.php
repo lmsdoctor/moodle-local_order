@@ -31,7 +31,7 @@ require_login();
 global $SESSION, $USER, $DB;
 
 use local_order\order_table;
-use \local_order\form\order_filter_form;
+use local_order\form\order_filter_form;
 use \core\output\notification;
 
 $context = context_system::instance();
@@ -46,11 +46,34 @@ if (!is_siteadmin($USER->id)) {
 }
 
 $download = optional_param('download', '', PARAM_ALPHA);
-$forminitdata = new stdClass();
-$forminitdata->paymentstatus = optional_param('paymentstatus', '', PARAM_TEXT);
-$forminitdata->itemname = optional_param('itemname', '', PARAM_TEXT);
-$forminitdata->startdate = optional_param('startdate', 0, PARAM_INT);
-$forminitdata->finaldate = optional_param('finaldate', 0, PARAM_INT);
+$params = new stdClass();
+$params->paymentstatus = optional_param('paymentstatus', '', PARAM_TEXT);
+$params->itemname = optional_param('itemname', '', PARAM_TEXT);
+$params->startdate = '';
+$params->finaldate = '';
+
+$startdate = optional_param('startdate', '', PARAM_TEXT);
+if (is_array($startdate)) {
+    $params->startdate = implode('-', array(
+        $startdate['year'],
+        str_pad($startdate['month'], 2, '0', STR_PAD_LEFT),
+        str_pad($startdate['day'], 2, '0', STR_PAD_LEFT),
+    ));
+} else if ($startdate) {
+    $params->startdate = $startdate;
+}
+
+$finaldate = optional_param('finaldate', '', PARAM_TEXT);
+if ($finaldate) {
+    $params->finaldate = implode('-', array(
+        $finaldate['year'],
+        str_pad($finaldate['month'], 2, '0', STR_PAD_LEFT),
+        str_pad($finaldate['day'], 2, '0', STR_PAD_LEFT),
+    ));
+} else if ($finaldate) {
+    $params->finaldate = $finaldate;
+}
+
 
 $orderurl = new moodle_url(HOME);
 $PAGE->set_context($context);
@@ -66,7 +89,7 @@ $PAGE->requires->js_call_amd('local_order/confirm', 'init');
 if (!$table->is_downloading()) {
 
     // Search Filter Form Instance.
-    $mform = new order_filter_form(null, (array)$forminitdata, 'post', '', array('name' => 'filter'));
+    $mform = new order_filter_form(null, null, 'post', '', array('name' => 'filter'));
 
     // Define heading and title.
     $PAGE->set_title(get_string('orders', PLUGINNAME));
@@ -90,34 +113,19 @@ $sql = new stdClass();
 $sql->fields = "id, instanceid, itemname, userid, memo, paymenttype, paymentstatus, timeupdated";
 $sql->from = "{" . TABLE_TRAN . "}";
 $sql->where = "1=1";
-$sql->params = (array)$forminitdata;
+$sql->params = (array)$params;
 
-if (!empty($forminitdata->paymentstatus)) {
+if (!empty($params->paymentstatus)) {
     $sql->where = $sql->where . ' AND paymentstatus = :paymentstatus';
 }
 
-if (!empty($forminitdata->itemname)) {
+if (!empty($params->itemname)) {
     $sql->where = $sql->where . " AND itemname LIKE :itemname";
-    $sql->params['itemname'] = '%' . $DB->sql_like_escape($forminitdata->itemname) . '%';
+    $sql->params['itemname'] = '%' . $DB->sql_like_escape($params->itemname) . '%';
 }
 
-$symbol = '-';
-if (!empty($forminitdata->startdate)) {
-    $startdate = array(
-        $forminitdata->startdate['year'],
-        str_pad($forminitdata->startdate['month'], 2, '0', STR_PAD_LEFT),
-        str_pad($forminitdata->startdate['day'], 2, '0', STR_PAD_LEFT),
-    );
-    $sql->params['startdate'] = implode($symbol, $startdate);
-
-    if (!empty($forminitdata->finaldate)) {
-        $finaldate = array(
-            $forminitdata->finaldate['year'],
-            str_pad($forminitdata->finaldate['month'], 2, '0', STR_PAD_LEFT),
-            str_pad($forminitdata->finaldate['day'], 2, '0', STR_PAD_LEFT),
-        );
-
-        $sql->params['finaldate'] = implode($symbol, $finaldate);
+if (!empty($params->startdate)) {
+    if (!empty($params->finaldate)) {
         $sql->where = $sql->where . ' AND DATE(FROM_UNIXTIME(timeupdated)) BETWEEN :startdate AND :finaldate ';
     } else {
         $sql->where = $sql->where . ' AND DATE(FROM_UNIXTIME(timeupdated)) = :startdate';
@@ -131,7 +139,7 @@ $table->set_sql(
     $sql->where,
     $sql->params
 );
-$table->define_baseurl($orderurl);
+$table->define_baseurl(new moodle_url(HOME, (array)$params));
 $table->out(40, true);
 
 if (!$table->is_downloading()) {

@@ -88,7 +88,7 @@ $mform = new order_form($updateurl, null, 'post', '', array('name' => 'updatesta
 
 // Form processing and displaying is done here.
 if ($mform->is_cancelled()) {
-    redirect($orderurl);
+    redirect(new moodle_url(CANCEL));
 } else {
 
     // Set default data (if any).
