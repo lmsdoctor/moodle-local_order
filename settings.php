@@ -15,15 +15,24 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Version file.
+ * Local order settings.
  *
  * @package    local_order
- * @copyright  2024 Andres, David Q.
+ * @copyright  2024 LMS Doctor <info@lmsdoctor.com>
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2024011800;
-$plugin->requires = 2018051200;
-$plugin->component = "local_order";
+if ($hassiteconfig) {
+    $ADMIN->add(
+        'localplugins',
+        new admin_externalpage(
+            'local_order/order',
+            get_string('pluginname', 'local_order'),
+            new moodle_url('/local/order/index.php')
+        )
+    );
+}
+
+// Tell core we already added the settings structure.
+$settings = null;
