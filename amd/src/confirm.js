@@ -23,9 +23,6 @@ define(modules, function ($, ModalFactory, ModalEvents) {
         // Check if the start date checkbox is checked
         const checked = $("input#id_startdate_enabled").is(":checked");
 
-        // Toggle the visibility of the final date field based on the start date checkbox state
-        $("#fitem_id_finaldate").toggleClass("d-none", !checked);
-
         // Disable or enable the final date checkbox based on the start date checkbox state
         $("input#id_finaldate_enabled")
           .prop("disabled", !checked)
