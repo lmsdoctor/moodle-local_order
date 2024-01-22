@@ -8,27 +8,43 @@ const modules = ["jquery", "core/modal_factory", "core/modal_events"];
 define(modules, function ($, ModalFactory, ModalEvents) {
   return {
     init: function () {
-
-      // Prevent the leave site? popup.
-      window.addEventListener('beforeunload', function (event) {
+      /**
+       * Adds an event listener for the 'beforeunload' event, stopping immediate propagation.
+       * @param {Event} event - The event object.
+       */
+      window.addEventListener("beforeunload", function (event) {
         event.stopImmediatePropagation();
       });
 
-      const finaldatecontent = $("#fitem_id_finaldate");
-      finaldatecontent.addClass("d-none");
+      /**
+       * Shows or hides the final date based on the state of the start date checkbox.
+       */
+      function showFinalDate() {
+        // Check if the start date checkbox is checked
+        const checked = $("input#id_startdate_enabled").is(":checked");
 
-      $("input#id_startdate_enabled").change(function (e) {
-        finaldatecontent.toggleClass("d-none");
-        const checked = $(e).is(":checked");
+        // Toggle the visibility of the final date field based on the start date checkbox state
+        $("#fitem_id_finaldate").toggleClass("d-none", !checked);
+
+        // Disable or enable the final date checkbox based on the start date checkbox state
         $("input#id_finaldate_enabled")
-          .attr("disabled", checked)
-          .prop("checked", false);
-      });
+          .prop("disabled", !checked)
+          .prop("checked", checked);
+      }
 
+      // Initial call to showFinalDate
+      showFinalDate();
+
+      // Add a change event listener to the start date checkbox to trigger showFinalDate
+      $("input#id_startdate_enabled").change(showFinalDate);
+
+      // Add a click event listener to delete action links
       $("a.action-delete").on("click", function (e) {
         e.preventDefault();
         var href = $(this).attr("href");
         var trigger = $(".create-modal");
+
+        // Create a confirmation modal for deletion
         ModalFactory.create(
           {
             type: ModalFactory.types.SAVE_CANCEL,
@@ -37,29 +53,38 @@ define(modules, function ($, ModalFactory, ModalEvents) {
           },
           trigger
         ).done(function (modal) {
+          // Handle the save event of the modal
           modal.getRoot().on(ModalEvents.save, function () {
+            // Redirect to the provided href on save
             location.href = href;
           });
+
+          // Show the modal
           modal.show();
         });
       });
 
+      // Add a click event listener to the submit button of the update status form
       $("form[name='updatestatus'] #id_submitbutton").on("click", function (e) {
         e.preventDefault();
-
         var trigger = $(".create-modal");
+
+        // Create a confirmation modal for updating order status
         ModalFactory.create(
           {
             type: ModalFactory.types.SAVE_CANCEL,
             title: "Update order status",
-            body: "Do you really want to update this order? it may result in unregistering students from their courses.",
+            body: "Do you really want to update this order? It may result in unregistering students from their courses.",
           },
           trigger
         ).done(function (modal) {
+          // Handle the save event of the modal
           modal.getRoot().on(ModalEvents.save, function () {
-            // Submit the form.
+            // Submit the form
             $("form").submit();
           });
+
+          // Show the modal
           modal.show();
         });
       });
