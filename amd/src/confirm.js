@@ -29,7 +29,7 @@ define(modules, function ($, ModalFactory, ModalEvents) {
         // Disable or enable the final date checkbox based on the start date checkbox state
         $("input#id_finaldate_enabled")
           .prop("disabled", !checked)
-          .prop("checked", checked);
+          .prop("checked", false);
       }
 
       // Initial call to showFinalDate
