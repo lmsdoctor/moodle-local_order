@@ -64,7 +64,7 @@ if (is_array($startdate)) {
 }
 
 $finaldate = optional_param('finaldate', '', PARAM_TEXT);
-if ($finaldate) {
+if (is_array($finaldate)) {
     $params->finaldate = implode('-', array(
         $finaldate['year'],
         str_pad($finaldate['month'], 2, '0', STR_PAD_LEFT),
