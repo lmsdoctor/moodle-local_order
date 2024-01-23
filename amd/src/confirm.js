@@ -30,10 +30,10 @@ define(modules, function ($, ModalFactory, ModalEvents) {
       }
 
       // Initial call to showFinalDate
-      showFinalDate();
+      // showFinalDate();
 
       // Add a change event listener to the start date checkbox to trigger showFinalDate
-      $("input#id_startdate_enabled").change(showFinalDate);
+      // $("input#id_startdate_enabled").change(showFinalDate);
 
       // Add a click event listener to delete action links
       $("a.action-delete").on("click", function (e) {
