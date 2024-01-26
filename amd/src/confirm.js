@@ -12,34 +12,21 @@ define(modules, function ($, ModalFactory, ModalEvents) {
        * Adds an event listener for the 'beforeunload' event, stopping immediate propagation.
        * @param {Event} event - The event object.
        */
-      window.addEventListener("beforeunload", function (event) {
-        event.stopImmediatePropagation();
-      });
+      window.addEventListener("beforeunload", (evt) =>
+        evt.stopImmediatePropagation()
+      );
 
-      /**
-       * Shows or hides the final date based on the state of the start date checkbox.
-       */
-      function showFinalDate() {
-        // Check if the start date checkbox is checked
-        const checked = $("input#id_startdate_enabled").is(":checked");
-
-        // Disable or enable the final date checkbox based on the start date checkbox state
-        $("input#id_finaldate_enabled")
-          .prop("disabled", !checked)
-          .prop("checked", false);
-      }
-
-      // Initial call to showFinalDate
-      // showFinalDate();
-
-      // Add a change event listener to the start date checkbox to trigger showFinalDate
-      // $("input#id_startdate_enabled").change(showFinalDate);
+      // Select the form with the name 'updatestatus' using jQuery
+      const form = $("form[name='updatestatus']");
+      // Find the cancel and submit buttons within the form
+      const cancelButton = form.find("input#id_cancel");
+      const submitButton = form.find("input#id_submitbutton");
+      const deleteButton = form.find("a.action-delete");
 
       // Add a click event listener to delete action links
-      $("a.action-delete").on("click", function (e) {
+      deleteButton.on("click", function (e) {
         e.preventDefault();
         var href = $(this).attr("href");
-        var trigger = $(".create-modal");
 
         // Create a confirmation modal for deletion
         ModalFactory.create(
@@ -48,7 +35,7 @@ define(modules, function ($, ModalFactory, ModalEvents) {
             title: "Delete",
             body: "Do you really want to delete this record?",
           },
-          trigger
+          $(".create-modal")
         ).done(function (modal) {
           // Handle the save event of the modal
           modal.getRoot().on(ModalEvents.save, function () {
@@ -61,10 +48,21 @@ define(modules, function ($, ModalFactory, ModalEvents) {
         });
       });
 
-      // Add a click event listener to the submit button of the update status form
-      $("form[name='updatestatus'] #id_submitbutton").on("click", function (e) {
-        e.preventDefault();
-        var trigger = $(".create-modal");
+      // Add a click event listener to the cancel button
+      cancelButton.on("click", function (evt) {
+        evt.preventDefault(); // Prevent the default form submission behavior
+
+        // Get the 'action-cancel' attribute from the form and navigate to that URL
+        const formAction = form.attr("action-cancel");
+        location.href = formAction;
+      });
+
+      // Add a click event listener to the submit button
+      submitButton.on("click", function (evt) {
+        evt.preventDefault(); // Prevent the default form submission behavior
+
+        // Get the 'action' attribute from the form
+        const formAction = form.attr("action");
 
         // Create a confirmation modal for updating order status
         ModalFactory.create(
@@ -73,12 +71,11 @@ define(modules, function ($, ModalFactory, ModalEvents) {
             title: "Update order status",
             body: "Do you really want to update this order? It may result in unregistering students from their courses.",
           },
-          trigger
+          $(".create-modal")
         ).done(function (modal) {
           // Handle the save event of the modal
           modal.getRoot().on(ModalEvents.save, function () {
-            // Submit the form
-            $("form").submit();
+            form.prop("action", formAction).submit(); // Set the form action and submit the form
           });
 
           // Show the modal

@@ -47,7 +47,7 @@ $action = optional_param('action', '', PARAM_TEXT);
 $urlparams = array('id' => $id, 'action' => $action);
 
 $orderurl = new moodle_url(HOME);
-$updateurl = new moodle_url(UPDATEURL, (array)$urlparams);
+$updateurl = new moodle_url(UPDATEURL);
 
 $strupdateorder = get_string('updateorder', PLUGINNAME);
 
@@ -84,7 +84,16 @@ $transaction->action = $action;
 
 $user = $DB->get_record('user', array('id' => $transaction->userid));
 $user->fullname = fullname($user);
-$mform = new order_form($updateurl, null, 'post', '', array('name' => 'updatestatus'));
+$mform = new order_form(
+    $updateurl,
+    null,
+    'post',
+    '',
+    array(
+        'name' => 'updatestatus',
+        'action-cancel' => new moodle_url('/local/order/cancel.php')
+    )
+);
 
 // Form processing and displaying is done here.
 if ($mform->is_cancelled()) {
@@ -124,6 +133,7 @@ echo html_writer::tag(
         html_writer::tag('p', get_string('courseslinkedtransaction_info', PLUGINNAME, $user), array('class' => 'container')),
     array('class' => 'alert alert-warning border-radius py-4 mt-5')
 );
+
 
 $table->define_baseurl($CFG->wwwroot . DETAILURL);
 $table->out(10, true);
