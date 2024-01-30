@@ -18,7 +18,7 @@
  * Strings for component 'local_order', language 'en'.
  *
  * @package    local_order
- * @copyright  2022 Andres Ramos <andres.ramos@lmsdoctor.com>
+ * @copyright  2024 LMS Doctor <helpdesk@lmsdoctor.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -27,12 +27,13 @@ $string['amount'] = 'Amount';
 $string['cancelled'] = 'Cancelled';
 $string['completed'] = 'Completed';
 $string['deleted'] = 'Deleted';
-$string['failed'] = 'Failed';
-$string['ismember'] = 'Is member';
 $string['enrollmentdate'] = 'Enrollment date';
+$string['failed'] = 'Failed';
+$string['incomplete'] = 'Incomplete';
+$string['ismember'] = 'Is member';
 $string['on-hold'] = 'On hold';
-$string['orders'] = 'Orders';
 $string['order'] = 'Order #';
+$string['orders'] = 'Orders';
 $string['organization'] = 'Organization';
 $string['pending'] = 'Pending payment';
 $string['pluginname'] = 'Orders';
