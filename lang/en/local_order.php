@@ -26,6 +26,7 @@ $string['actions'] = 'Actions';
 $string['amount'] = 'Amount';
 $string['cancelled'] = 'Cancelled';
 $string['completed'] = 'Completed';
+$string['complete'] = 'Complete';
 $string['deleted'] = 'Deleted';
 $string['enrollmentdate'] = 'Enrollment date';
 $string['failed'] = 'Failed';
