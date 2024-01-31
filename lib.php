@@ -34,30 +34,31 @@ defined('MOODLE_INTERNAL') || die();
  */
 function local_order_extend_navigation($nav) {
 
-    $nodecredential = $nav->add(get_string('pluginname', 'local_order'));
-
-    if (is_siteadmin()) {
-        $discounts = navigation_node::create(
-            get_string('discountcodes', 'local_order'),
-            new moodle_url('/enrol/payment/discount/index.php'),
-            navigation_node::TYPE_CUSTOM,
-            'discounts',
-            'discounts',
-            new pix_icon('i/permissions', '')
-        );
-        $discounts->showinflatnavigation = true;
-        $nodecredential->add_node($discounts);
-
-        $orders = navigation_node::create(
-            get_string('pluginname', 'local_order'),
-            new moodle_url('/local/order/index.php'),
-            navigation_node::TYPE_CUSTOM,
-            'orders',
-            'orders',
-            new pix_icon('i/report', '')
-        );
-        $orders->showinflatnavigation = true;
-        $nodecredential->add_node($orders);
+    if (!has_capability('moodle/user:loginas', context_system::instance())) {
+        return false;
     }
+
+    $nodecredential = $nav->add(get_string('pluginname', 'local_order'));
+    $discounts = navigation_node::create(
+        get_string('discountcodes', 'local_order'),
+        new moodle_url('/enrol/payment/discount/index.php'),
+        navigation_node::TYPE_CUSTOM,
+        'discounts',
+        'discounts',
+        new pix_icon('i/permissions', '')
+    );
+    $discounts->showinflatnavigation = true;
+    $nodecredential->add_node($discounts);
+
+    $orders = navigation_node::create(
+        get_string('pluginname', 'local_order'),
+        new moodle_url('/local/order/index.php'),
+        navigation_node::TYPE_CUSTOM,
+        'orders',
+        'orders',
+        new pix_icon('i/report', '')
+    );
+    $orders->showinflatnavigation = true;
+    $nodecredential->add_node($orders);
 
 }
