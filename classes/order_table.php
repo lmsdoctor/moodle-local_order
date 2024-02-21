@@ -178,7 +178,7 @@ class order_table extends \table_sql {
      */
     public function col_discountcode($row) {
         global $DB;
-        $coupon = $DB->get_field('enrol_payment_sessionv2', 'coupon', array('id' => $row->sessionid));
+        $coupon = $DB->get_field('enrol_payment_session', 'coupon', array('id' => $row->sessionid));
         if (empty($coupon)) {
             $coupon = '-';
         }

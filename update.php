@@ -28,7 +28,7 @@ require_login();
 global $PAGE, $DB, $USER;
 
 define('PLUGIN', 'local_order');
-define('TABLE', 'enrol_payment_transactionv2');
+define('TABLE', 'enrol_payment_transaction');
 
 use \core\output\notification;
 
