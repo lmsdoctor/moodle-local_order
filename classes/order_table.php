@@ -114,7 +114,9 @@ class order_table extends \table_sql {
      */
     public function col_ismember($row) {
         global $DB;
-        $user = $DB->get_record('user', array('id' => $row->userid));
+        if (!$user = $DB->get_record('user', array('id' => $row->userid))) {
+            return null;
+        }
         \profile_load_data($user);
         return $user->profile_field_ismember;
     }
@@ -127,7 +129,9 @@ class order_table extends \table_sql {
      */
     public function col_organization($row) {
         global $DB;
-        $user = $DB->get_record('user', array('id' => $row->userid));
+        if (!$user = $DB->get_record('user', array('id' => $row->userid))) {
+            return null;
+        }
         \profile_load_data($user);
         return $user->profile_field_organization;
     }
@@ -158,7 +162,9 @@ class order_table extends \table_sql {
     public function col_instanceid($row) {
         global $DB;
 
-        $user = $DB->get_record('user', array('id' => $row->userid));
+        if (!$user = $DB->get_record('user', array('id' => $row->userid))) {
+            return null;
+        }
 
         if (!$this->is_downloading()) {
             return html_writer::link(

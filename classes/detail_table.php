@@ -24,9 +24,6 @@
 
 namespace local_order;
 
-use moodle_url;
-use pix_icon;
-use html_writer;
 global $CFG;
 require_once($CFG->dirroot . '/lib/enrollib.php');
 
@@ -108,7 +105,6 @@ class detail_table extends \table_sql {
      * @return string
      */
     public function col_amount($row) {
-        global $DB;
 
         if (empty($row->amount)) {
             return '0.00';

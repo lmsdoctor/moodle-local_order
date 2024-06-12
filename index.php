@@ -50,8 +50,16 @@ if (!$table->is_downloading()) {
 }
 
 // Work out the sql for the table.
-$table->set_sql('id,instanceid,userid,memo,paymentstatus,timeupdated', "{enrol_payment_transaction}", '1=1');
+$table->set_sql(
+    't.id, t.instanceid, t.userid, t.memo, t.paymentstatus, t.timeupdated',
+    '{enrol_payment_transaction} t JOIN {user} u ON u.id = userid',
+    'u.deleted = :deleted',
+    array('deleted' => 0),
+);
 $table->define_baseurl("$CFG->wwwroot/local/order/index.php");
+$table->no_sorting('ismember');
+$table->no_sorting('organization');
+$table->no_sorting('actions');
 $table->out(40, true);
 
 if (!$table->is_downloading()) {
