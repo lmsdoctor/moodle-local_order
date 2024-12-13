@@ -54,8 +54,13 @@ if (!$table->is_downloading()) {
     echo $OUTPUT->header();
 }
 
+$select = 't.id, t.sessionid, t.userid, t.userids, t.courseid, t.value, t.status, t.updatedat, s.coupon';
+$from = '{enrol_payment_transaction} t
+         JOIN {enrol_payment_session} s ON s.id = t.sessionid';
+$where = '1=1';
+
 // Work out the sql for the table.
-$table->set_sql('id,sessionid,userid,userids,courseid,value,status,updatedat', "{enrol_payment_transaction}", '1=1');
+$table->set_sql($select, $from, $where);
 $table->define_baseurl("$CFG->wwwroot/local/order/index.php");
 $table->out(40, true);
 

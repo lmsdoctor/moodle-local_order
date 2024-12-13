@@ -48,7 +48,7 @@ class order_table extends \table_sql {
             'userids',
             'courseid',
             'updatedat',
-            'discountcode',
+            'coupon',
             'status',
             'value',
         );
@@ -80,7 +80,7 @@ class order_table extends \table_sql {
     }
 
     /**
-     * Returns the user fullname.
+     * Returns purchased by.
      *
      * @param stdClass $row Contains object with all the values of record.
      * @return string
@@ -94,7 +94,7 @@ class order_table extends \table_sql {
     }
 
     /**
-     * Returns the user fullname.
+     * Returns enrolled users list.
      *
      * @param stdClass $row Contains object with all the values of record.
      * @return string
@@ -114,7 +114,7 @@ class order_table extends \table_sql {
     }
 
     /**
-     * Returns the employee number if exist, empty otherwise.
+     * Returns the course shortname.
      *
      * @param stdClass $row Contains object with all the values of record.
      * @return string
@@ -131,15 +131,13 @@ class order_table extends \table_sql {
     }
 
     /**
-     * Returns the id as a link to the detail page.
+     * Returns the order id.
      *
      * @param  stdClass $row
      * @return string
      */
     public function col_id($row) {
-        global $DB;
 
-        $user = $DB->get_record('user', array('id' => $row->userid));
         return $row->sessionid;
     }
 
@@ -158,7 +156,7 @@ class order_table extends \table_sql {
     }
 
     /**
-     * Returns the license type.
+     * Returns order status.
      *
      * @param  stdClass $row
      * @return string
@@ -171,28 +169,28 @@ class order_table extends \table_sql {
     }
 
     /**
-     * Returns the license type.
+     * Returns discount codes.
      *
      * @param  stdClass $row
      * @return string
      */
-    public function col_discountcode($row) {
-        global $DB;
-        $coupon = $DB->get_field('enrol_payment_session', 'coupon', array('id' => $row->sessionid));
-        if (empty($coupon)) {
-            $coupon = '-';
+    public function col_coupon($row) {
+
+        if (empty($row->coupon)) {
+            $row->coupon = '-';
         }
-        return $coupon;
+        return $row->coupon;
+
     }
 
     /**
-     * Returns subcategory.
+     * Returns value.
      *
      * @param  stdClass $row
      * @return string
      */
     public function col_value($row) {
-        return '$' . $row->value;
+        return '$' . (float) $row->value;
     }
 
     /**

@@ -18,12 +18,12 @@
  * Version file.
  *
  * @package    local_order
- * @copyright  2023 Andres, David Q.
+ * @copyright  2024 LMS Doctor <support@lmsdoctor.com>
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2024022000;
+$plugin->version = 2024121300;
 $plugin->requires = 2018051200;
 $plugin->component = "local_order";
