@@ -62,6 +62,7 @@ $where = '1=1';
 // Work out the sql for the table.
 $table->set_sql($select, $from, $where);
 $table->define_baseurl("$CFG->wwwroot/local/order/index.php");
+
 $table->out(40, true);
 
 if (!$table->is_downloading()) {

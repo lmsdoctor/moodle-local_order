@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Session table.
+ * Order table.
  *
  * @package    local_order
- * @copyright  2023 LMS Doctor
+ * @copyright  2023 LMS Doctor <support@lmsdoctor.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -75,6 +75,8 @@ class order_table extends \table_sql {
         if (!$this->is_downloading()) {
             $headers[] = get_string('actions', PLUGIN);
         }
+
+        $this->sortable(true, 'id', 'SORT_DESC');
         $this->define_headers($headers);
 
     }
