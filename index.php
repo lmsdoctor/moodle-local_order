@@ -29,6 +29,7 @@ require("$CFG->libdir/tablelib.php");
 
 use local_order\order_table;
 use \core\output\notification;
+// use core_table\local\filter\filter;
 
 $context = context_system::instance();
 $PAGE->set_context($context);
@@ -43,6 +44,10 @@ $PAGE->requires->js_call_amd('local_order/confirm', 'init');
 $download = optional_param('download', '', PARAM_ALPHA);
 define('PLUGIN', 'local_order');
 
+// $mform = new \local_order\form\filter_form(null);
+// $filterset = new \core_user\table\participants_filterset();
+// $filterset->add_filter(new integer_filter('courseid', filter::JOINTYPE_DEFAULT, [(int)$course->id]));
+
 $table = new order_table('uniqueid');
 $table->is_downloading($download, 'Orders_' . time(), 'orders');
 
@@ -54,16 +59,21 @@ if (!$table->is_downloading()) {
     echo $OUTPUT->header();
 }
 
-$select = 't.id, t.sessionid, t.userid, t.userids, t.courseid, t.value, t.status, t.updatedat, s.coupon';
+$select = 't.id, u.email, t.sessionid, t.userid, t.userids,
+            t.courseid, c.shortname, t.value, t.status, t.updatedat, s.coupon';
 $from = '{enrol_payment_transaction} t
-         JOIN {enrol_payment_session} s ON s.id = t.sessionid';
+         JOIN {course} c ON c.id = t.courseid
+         JOIN {enrol_payment_session} s ON s.id = t.sessionid
+         JOIN {user} u ON u.id = t.userid
+         ';
 $where = '1=1';
 
 // Work out the sql for the table.
 $table->set_sql($select, $from, $where);
 $table->define_baseurl("$CFG->wwwroot/local/order/index.php");
 
-$table->out(40, true);
+// $mform->display();
+$table->out(50, true);
 
 if (!$table->is_downloading()) {
     echo $OUTPUT->footer();

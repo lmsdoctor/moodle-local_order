@@ -44,9 +44,9 @@ class order_table extends \table_sql {
         // Define the list of columns to show.
         $columns = array(
             'id',
-            'userid',
+            'email',
             'userids',
-            'courseid',
+            'shortname',
             'updatedat',
             'coupon',
             'status',
@@ -77,6 +77,8 @@ class order_table extends \table_sql {
         }
 
         $this->sortable(true, 'id', 'SORT_DESC');
+        $this->no_sorting('userids');
+        $this->no_sorting('actions');
         $this->define_headers($headers);
 
     }
@@ -112,23 +114,6 @@ class order_table extends \table_sql {
         }
 
         return implode(', ', $userlist);
-
-    }
-
-    /**
-     * Returns the course shortname.
-     *
-     * @param stdClass $row Contains object with all the values of record.
-     * @return string
-     */
-    public function col_courseid($row) {
-        global $DB;
-
-        if (empty($row->courseid)) {
-            return '';
-        }
-
-        return $DB->get_field('course', 'shortname', array('id' => $row->courseid));
 
     }
 
