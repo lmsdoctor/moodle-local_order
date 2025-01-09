@@ -24,7 +24,7 @@ function($, ModalFactory, ModalEvents) {
                 });
             });
 
-            $('#id_submitbutton').on('click', function(e) {
+            $('input[type="submit"][value="Save"]').on('click', function(e) {
                 e.preventDefault();
 
                 var trigger = $('.create-modal');

@@ -84,20 +84,6 @@ class order_table extends \table_sql {
     }
 
     /**
-     * Returns purchased by.
-     *
-     * @param stdClass $row Contains object with all the values of record.
-     * @return string
-     */
-    public function col_userid($row) {
-        global $DB;
-
-        $user = $DB->get_record('user', array('id' => $row->userid));
-        return $user->email;
-
-    }
-
-    /**
      * Returns enrolled users list.
      *
      * @param stdClass $row Contains object with all the values of record.

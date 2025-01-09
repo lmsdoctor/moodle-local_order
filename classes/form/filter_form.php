@@ -54,29 +54,6 @@ class filter_form extends moodleform {
         $mform->addElement('header', 'filter-header', get_string('search'));
         $mform->setExpanded('filter-header', true);
 
-        $status = array(
-            'select' => get_string('selectstatus', PLUGIN),
-            'pending' => get_string('pending', PLUGIN),
-            'on-hold' => get_string('on-hold', PLUGIN),
-            'completed' => get_string('completed', PLUGIN),
-            'cancelled' => 'Cancelled',
-            'refunded' => 'Refunded',
-            'failed' => 'Failed',
-        );
-
-        if (!empty($this->_customdata->gateway && $this->_customdata->gateway == 'stripe')) {
-            $status = array(
-                'select' => get_string('selectstatus', PLUGIN),
-                'open' => 'Open',
-                'pending' => get_string('pending', PLUGIN),
-                'on-hold' => get_string('on-hold', PLUGIN),
-                'complete' => get_string('complete', PLUGIN),
-                'cancelled' => 'Cancelled',
-                'refunded' => 'Refunded',
-                'failed' => 'Failed',
-            );
-        }
-
         $mform->addElement('text', 'purchaserid', get_string('purchaserid', 'local_order'));
         $mform->setType('purchaserid', PARAM_TEXT);
 
@@ -86,7 +63,9 @@ class filter_form extends moodleform {
         $startarr = array(get_string('all'));
         $coursesobj = get_courses($categoryid = "all", $sort = "c.shortname ASC", $fields="c.id, c.shortname");
         $courses = array_map(function($obj) { return $obj->shortname; }, $coursesobj);
-        $merge = array_merge($startarr, $courses);
+
+        // To preserve the keys.
+        $merge = $startarr + $courses;
 
         $mform->addElement('select', 'course', get_string('course'), $merge);
         $mform->setType('course', PARAM_TEXT);
@@ -106,10 +85,37 @@ class filter_form extends moodleform {
         $mform->setType('enddate', PARAM_INT);
 
         $codes = array(get_string('all'));
-        $mform->addElement('select', 'discountcode', get_string('discountcode', 'local_order'), $codes);
+
+        $discountcodes = $DB->get_records_menu('enrol_payment_discountcode', null, 'code ASC',  $fields='id, code');
+        $allcodes = $codes + $discountcodes;
+        $mform->addElement('select', 'discountcode', get_string('discountcode', 'local_order'), $allcodes);
         $mform->setType('discountcode', PARAM_TEXT);
 
+
+        $status = array(
+            '0' => get_string('selectstatus', PLUGIN),
+            'pending' => get_string('pending', PLUGIN),
+            'on-hold' => get_string('on-hold', PLUGIN),
+            'completed' => get_string('completed', PLUGIN),
+            'cancelled' => 'Cancelled',
+            'refunded' => 'Refunded',
+            'failed' => 'Failed',
+        );
+
+        // if (!empty($this->_customdata->gateway && $this->_customdata->gateway == 'stripe')) {
+        //     $status = array(
+        //         '0' => get_string('selectstatus', PLUGIN),
+        //         'open' => 'Open',
+        //         'pending' => get_string('pending', PLUGIN),
+        //         'on-hold' => get_string('on-hold', PLUGIN),
+        //         'complete' => get_string('complete', PLUGIN),
+        //         'cancelled' => 'Cancelled',
+        //         'refunded' => 'Refunded',
+        //         'failed' => 'Failed',
+        //     );
+        // }
         $mform->addElement('select', 'status', get_string('orderstatus', PLUGIN), $status);
+        $mform->setType('status', PARAM_TEXT);
 
         $this->add_action_buttons(true, get_string('search'));
 
