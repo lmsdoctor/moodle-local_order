@@ -94,26 +94,15 @@ class filter_form extends moodleform {
 
         $status = array(
             '0' => get_string('selectstatus', PLUGIN),
+            'open' => get_string('open', PLUGIN),
             'pending' => get_string('pending', PLUGIN),
             'on-hold' => get_string('on-hold', PLUGIN),
-            'completed' => get_string('completed', PLUGIN),
+            'complete' => get_string('complete', PLUGIN),
             'cancelled' => 'Cancelled',
             'refunded' => 'Refunded',
             'failed' => 'Failed',
         );
 
-        // if (!empty($this->_customdata->gateway && $this->_customdata->gateway == 'stripe')) {
-        //     $status = array(
-        //         '0' => get_string('selectstatus', PLUGIN),
-        //         'open' => 'Open',
-        //         'pending' => get_string('pending', PLUGIN),
-        //         'on-hold' => get_string('on-hold', PLUGIN),
-        //         'complete' => get_string('complete', PLUGIN),
-        //         'cancelled' => 'Cancelled',
-        //         'refunded' => 'Refunded',
-        //         'failed' => 'Failed',
-        //     );
-        // }
         $mform->addElement('select', 'status', get_string('orderstatus', PLUGIN), $status);
         $mform->setType('status', PARAM_TEXT);
 
