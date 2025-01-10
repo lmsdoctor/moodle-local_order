@@ -50,7 +50,8 @@ $table = new order_table('uniqueid');
 $table->is_downloading($download, 'Orders_' . time(), 'orders');
 
 // Default SELECT and FROM statements
-$select = 't.id, u.id as userid, u.email, t.sessionid, t.userid, t.userids,
+$select = 'CAST(t.id AS UNSIGNED) AS id,
+            u.id as userid, u.email, t.sessionid, t.userid, t.userids,
             t.courseid, c.shortname,
             CAST(t.value AS DECIMAL(10, 2)) AS value,
             t.status, t.updatedat, s.coupon';
