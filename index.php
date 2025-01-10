@@ -51,7 +51,9 @@ $table->is_downloading($download, 'Orders_' . time(), 'orders');
 
 // Default SELECT and FROM statements
 $select = 't.id, u.id as userid, u.email, t.sessionid, t.userid, t.userids,
-            t.courseid, c.shortname, t.value, t.status, t.updatedat, s.coupon';
+            t.courseid, c.shortname,
+            CAST(t.value AS DECIMAL(10, 2)) AS value,
+            t.status, t.updatedat, s.coupon';
 $from = '{enrol_payment_transaction} t
          JOIN {course} c ON c.id = t.courseid
          JOIN {enrol_payment_session} s ON s.id = t.sessionid

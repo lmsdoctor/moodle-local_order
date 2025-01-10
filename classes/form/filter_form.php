@@ -93,7 +93,7 @@ class filter_form extends moodleform {
 
 
         $status = array(
-            '0' => get_string('selectstatus', PLUGIN),
+            '0' => get_string('all'),
             'open' => get_string('open', PLUGIN),
             'pending' => get_string('pending', PLUGIN),
             'on-hold' => get_string('on-hold', PLUGIN),
