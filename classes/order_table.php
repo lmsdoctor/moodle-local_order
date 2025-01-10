@@ -104,17 +104,6 @@ class order_table extends \table_sql {
     }
 
     /**
-     * Returns the order id.
-     *
-     * @param  stdClass $row
-     * @return string
-     */
-    public function col_id($row) {
-
-        return $row->sessionid;
-    }
-
-    /**
      * Returns the time completed.
      *
      * @param  stdClass $row
