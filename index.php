@@ -118,7 +118,7 @@ if (!$table->is_downloading()) {
 $table->set_sql($select, $from, $where, $params);
 $table->define_baseurl("$CFG->wwwroot/local/order/index.php");
 
-echo html_writer::tag('h2', get_string('orders', PLUGIN));
+echo html_writer::tag('h2', get_string('orders', PLUGIN), ['class' => 'custom-payment-title mb-5']);
 $mform->display();
 $table->out(50, true);
 
