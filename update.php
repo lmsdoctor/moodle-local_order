@@ -42,12 +42,15 @@ $pageurl = new moodle_url('/local/order/update.php', $urlparams);
 $PAGE->requires->js_call_amd('local_order/confirm', 'init');
 
 $strupdateorder = get_string('updateorder', PLUGIN);
+$site = get_site();
+$vieworders = get_string('viewoders', PLUGIN);
+$title = "$site->shortname: $strupdateorder";
 
 $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url($pageurl);
-$PAGE->set_title($strupdateorder);
-$PAGE->set_heading($strupdateorder);
+$PAGE->set_title($title);
+$PAGE->set_heading($site->fullname);
 $PAGE->set_pagelayout('standard');
 
 if (!has_capability('enrol/payment:manage', $context)) {
@@ -55,9 +58,9 @@ if (!has_capability('enrol/payment:manage', $context)) {
 }
 
 $PAGE->navbar->ignore_active();
-$PAGE->navbar->add(get_string('pluginname', PLUGIN));
-$PAGE->navbar->add(get_string('order', PLUGIN), $orderurl);
-$PAGE->navbar->add($strupdateorder);
+$PAGE->navbar->add(get_string('pluginname', 'enrol_payment'));
+$PAGE->navbar->add(get_string('orders', PLUGIN), $orderurl);
+$PAGE->navbar->add($strupdateorder, $pageurl);
 
 // Action delete.
 if ($action === 'delete') {
