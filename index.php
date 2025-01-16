@@ -24,16 +24,25 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_login();
+if (isguestuser()) {
+    print_error('guestsarenotallowed');
+}
 
 require("$CFG->libdir/tablelib.php");
 
 use local_order\order_table;
 use \core\output\notification;
 
+define('PLUGIN', 'local_order');
+
+$site = get_site();
+$vieworders = get_string('viewoders', PLUGIN);
+$title = "$site->shortname: $vieworders";
+
+$pageurl = new moodle_url('/local/order/index.php');
 $context = context_system::instance();
 $PAGE->set_context($context);
-$PAGE->set_url('/local/order/index.php');
-$returnurl = new moodle_url('/local/order/index.php');
+$PAGE->set_url($pageurl);
 
 if (!has_capability('enrol/payment:manage', $context)) {
     redirect(new moodle_url('/my'), get_string('requiredpermissions', 'enrol_payment'), 0, notification::NOTIFY_WARNING);
@@ -41,16 +50,16 @@ if (!has_capability('enrol/payment:manage', $context)) {
 
 $PAGE->requires->js_call_amd('local_order/confirm', 'init');
 
-$download = optional_param('download', '', PARAM_ALPHA);
-define('PLUGIN', 'local_order');
-
+// Filter form,
 $mform = new \local_order\form\filter_form(null);
 
+// Order table.
+$download = optional_param('download', '', PARAM_ALPHA);
 $table = new order_table('uniqueid');
 $table->is_downloading($download, 'Orders_' . time(), 'orders');
 
 // Default SELECT and FROM statements
-$select = 'CAST(t.id AS UNSIGNED) AS id,
+$select = 't.id,
             u.id as userid, u.email, t.sessionid, t.userid, t.userids,
             t.courseid, c.shortname,
             CAST(t.value AS DECIMAL(10, 2)) AS value,
@@ -63,7 +72,7 @@ $where = '1 = 1';
 $params = array();  // Array to hold query parameters
 
 if ($mform->is_cancelled()) {
-    redirect($returnurl);
+    redirect($pageurl);
 } else if ($search = $mform->get_data()) {
 
     // Process validated data
@@ -107,16 +116,24 @@ if ($mform->is_cancelled()) {
 }
 
 if (!$table->is_downloading()) {
+
     // Only print headers if not asked to download data.
-    // Print the page header.
-    $PAGE->set_title(get_string('orders', PLUGIN));
-    $PAGE->set_heading(get_string('orders', PLUGIN));
+    // Title and headings.
+    $PAGE->set_title($title);
+    $PAGE->set_heading($site->fullname);
+
+    // Navigation bar.
+    $PAGE->navbar->ignore_active();
+    $PAGE->navbar->add(get_string('pluginname', 'enrol_payment'));
+    $PAGE->navbar->add(get_string('orders', PLUGIN), $pageurl);
+
+    // Output header.
     echo $OUTPUT->header();
 }
 
 // Set the SQL for the table
 $table->set_sql($select, $from, $where, $params);
-$table->define_baseurl("$CFG->wwwroot/local/order/index.php");
+$table->define_baseurl($pageurl);
 
 echo html_writer::tag('h2', get_string('orders', PLUGIN), ['class' => 'custom-payment-title mb-5']);
 $mform->display();
